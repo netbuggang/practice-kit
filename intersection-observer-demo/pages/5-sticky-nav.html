@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景5：吸顶导航 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .demo-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      height: 60px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px 12px 0 0;
+      top: 0;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+
+    .section-header.sticky {
+      background: #1e293b;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      transform: scale(1.02);
+    }
+
+    .section-header.sticky h2 {
+      color: #667eea;
+    }
+
+    .section-header h2 {
+      color: white;
+      margin: 0;
+      padding: 0 1.5rem;
+      line-height: 60px;
+      transition: color 0.3s;
+    }
+
+    .section-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0 0 12px 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-container {
+      background: white;
+      border-radius: 50px;
+      padding: 0.8rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      top: 20px;
+      z-index: 100;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      border: 1px solid #e2e8f0;
+    }
+
+    .nav-container.sticky-nav {
+      position: sticky;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+      transform: translateY(-5px);
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: #f1f5f9;
+      color: #667eea;
+    }
+
+    .nav-links a.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .sentinel {
+      height: 1px;
+      visibility: hidden;
+    }
+
+    .sticky-indicator {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #1e293b;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      transition: opacity 0.3s;
+    }
+
+    .sticky-indicator.active {
+      background: #667eea;
+    }
+
+    .progress-ring {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+      color: #000;
+      z-index: 1000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>📌 场景5：吸顶导航</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 在导航栏上方放置一个哨兵元素，当哨兵离开视口时导航栏吸顶；
+      当哨兵重新进入视口时导航栏恢复原位。实现精准的吸顶效果。
+    </div>
+
+    <!-- 吸顶状态指示器 -->
+    <div class="sticky-indicator" id="stickyIndicator">导航栏状态: 正常</div>
+    <div class="progress-ring" id="progressRing">0%</div>
+
+    <!-- 哨兵元素 - 用于触发导航吸顶 -->
+    <div class="sentinel" id="navSentinel"></div>
+
+    <!-- 导航栏 -->
+    <div class="nav-container" id="mainNav">
+      <div class="nav-links">
+        <a href="#section1" class="active">第一章</a>
+        <a href="#section2">第二章</a>
+        <a href="#section3">第三章</a>
+        <a href="#section4">第四章</a>
+        <a href="#section5">第五章</a>
+      </div>
+    </div>
+
+    <div class="demo-content">
+      <!-- 章节1 -->
+      <section id="section1" class="section-header" data-sticky="header1">
+        <h2>📖 第一章：引言</h2>
+      </section>
+      <div class="section-content">
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+          在Web开发中，吸顶导航是一种常见的交互模式。当用户滚动页面时，导航栏会吸附在顶部，方便用户随时跳转到其他章节。
+        </p>
+        <p>传统实现依赖 scroll 事件和 getBoundingClientRect，但这种方式会导致频繁的重排，性能较差。IntersectionObserver 提供了更优雅的解决方案。</p>
+        <div
+          style="height:1000px; background: #f1f5f9; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; justify-content: center;">
+          内容区域
+        </div>
+      </div>
+
+      <!-- 章节2 -->
+      <section id="section2" class="section-header" data-sticky="header2">
+        <h2>🔧 第二章：实现原理</h2>
+      </section>
+      <div class="section-content">
+        <p>IntersectionObserver 可以异步观察目标元素与祖先元素或顶级文档视口的交叉状态。通过观察导航栏上方的哨兵元素，我们可以精确控制导航栏的吸顶状态。</p>
+        <ul style="margin-left: 2rem; margin-top: 1rem;">
+          <li>哨兵进入视口 → 导航栏恢复正常</li>
+          <li>哨兵离开视口 → 导航栏吸顶</li>
+        </ul>
+        <div
+          style="height:1000px; background: #f1f5f9; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; justify-content: center;">
+          代码示例区域
+        </div>
+      </div>
+
+      <!-- 章节3 -->
+      <section id="section3" class="section-header" data-sticky="header3">
+        <h2>⚡ 第三章：性能优势</h2>
+      </section>
+      <div class="section-content">
+        <p>相比传统的 scroll 监听方式，IntersectionObserver 有以下优势：</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+          <div style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #ef4444;">传统方式 ❌</h4>
+            <ul style="margin-left: 1.5rem;">
+              <li>主线程阻塞</li>
+              <li>频繁重排</li>
+              <li>无法节流优化</li>
+            </ul>
+          </div>
+          <div style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #22c55e;">Observer方式 ✅</h4>
+            <ul style="margin-left: 1.5rem;">
+              <li>异步非阻塞</li>
+              <li>无需计算位置</li>
+              <li>精准阈值控制</li>
+            </ul>
+          </div>
+        </div>
+        <div style="height:1000px; background: #f1f5f9; border-radius: 8px; margin: 1rem 0;"></div>
+      </div>
+
+      <!-- 章节4 -->
+      <section id="section4" class="section-header" data-sticky="header4">
+        <h2>🎨 第四章：进阶用法</h2>
+      </section>
+      <div class="section-content">
+        <p>除了基本的吸顶效果，还可以结合其他特性：</p>
+        <ul style="margin: 1rem 0 1rem 2rem;">
+          <li>动态改变导航样式</li>
+          <li>高亮当前章节</li>
+          <li>显示阅读进度</li>
+          <li>返回顶部按钮</li>
+        </ul>
+        <div style="height:1000px; background: #f1f5f9; border-radius: 8px; margin: 1rem 0;"></div>
+      </div>
+
+      <!-- 章节5 -->
+      <section id="section5" class="section-header" data-sticky="header5">
+        <h2>📝 第五章：总结</h2>
+      </section>
+      <div class="section-content">
+        <p>IntersectionObserver 为实现吸顶导航提供了优雅的解决方案，具有性能好、代码简洁、控制精准等优点。是现代Web开发中处理滚动相关需求的利器。</p>
+        <div style="background: #e9eef4; padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+          <strong>✨ 小技巧：</strong> 可以结合 CSS position: sticky 实现更简单的吸顶效果，但 IntersectionObserver 能提供更精细的控制。
+        </div>
+      </div>
+
+      <!-- 底部留白 -->
+      <div
+        style="height:1000px; background: linear-gradient(to bottom, #f1f5f9, #ffffff); border-radius: 12px; margin: 2rem 0; display: flex; align-items: center; justify-content: center;">
+        🏁 已经到底了
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 获取元素
+    const sentinel = document.getElementById('navSentinel');
+    const nav = document.getElementById('mainNav');
+    const indicator = document.getElementById('stickyIndicator');
+    const progressRing = document.getElementById('progressRing');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sections = document.querySelectorAll('.section-header');
+
+    // 导航吸顶观察器
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // 哨兵可见 → 导航恢复正常
+          nav.classList.remove('sticky-nav');
+          indicator.textContent = '导航栏状态: 正常';
+          indicator.classList.remove('active');
+        } else {
+          // 哨兵不可见 → 导航吸顶
+          nav.classList.add('sticky-nav');
+          indicator.textContent = '导航栏状态: 吸顶';
+          indicator.classList.add('active');
+        }
+      });
+    }, {
+      threshold: 0,
+      rootMargin: '-1px 0px 0px 0px' // 微调触发边界
+    });
+
+    navObserver.observe(sentinel);
+
+    // 章节高亮观察器
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          // 移除所有active类
+          navLinks.forEach(link => link.classList.remove('active'));
+          // 为对应链接添加active类
+          const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+          if (activeLink) {
+            activeLink.classList.add('active');
+          }
+        }
+      });
+    }, {
+      threshold: 0.5,
+      rootMargin: '-100px 0px -100px 0px' // 调整触发区域
+    });
+
+    // 观察所有章节
+    sections.forEach(section => {
+      sectionObserver.observe(section);
+    });
+
+    // 阅读进度计算
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      const maxScroll = documentHeight - windowHeight;
+      const progress = Math.round((scrollTop / maxScroll) * 100);
+
+      progressRing.textContent = `${progress}%`;
+
+      // 渐变圆环效果
+      const degree = (progress / 100) * 360;
+      progressRing.style.background = `conic-gradient(#667eea 0deg, #667eea ${degree}deg, white ${degree}deg, white 360deg)`;
+    }
+
+    window.addEventListener('scroll', updateProgress);
+    updateProgress();
+
+    // 点击导航平滑滚动
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+
+        if (targetSection) {
+          // 获取导航栏高度
+          const navHeight = document.getElementById('mainNav').offsetHeight;
+          const extraOffset = 20; // 额外留白 20px
+
+          const elementPosition = targetSection.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navHeight - extraOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // 章节吸顶效果（独立于导航）
+    // const headerObserver = new IntersectionObserver((entries) => {
+    //     entries.forEach(entry => {
+    //         if (entry.target.classList.contains('section-header')) {
+    //             if (!entry.isIntersecting) {
+    //                 entry.target.classList.add('sticky');
+    //             } else {
+    //                 entry.target.classList.remove('sticky');
+    //             }
+    //         }
+    //     });
+    // }, {
+    //     threshold: 0,
+    //     rootMargin: '-60px 0px 0px 0px'
+    // });
+
+    // document.querySelectorAll('.section-header').forEach(header => {
+    //     headerObserver.observe(header);
+    // });
+  </script>
+</body>
+
+</html>

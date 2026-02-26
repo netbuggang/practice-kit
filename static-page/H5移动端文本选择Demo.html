@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>H5移动端文本选择Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin: 25px 0 15px;
+            font-size: 1.4em;
+        }
+        
+        .demo-section {
+            margin-bottom: 30px;
+        }
+        
+        /* 文本选择区域样式 */
+        .selectable-text {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-size: 16px;
+            -webkit-user-select: text;
+            user-select: text;
+            touch-action: pan-y;
+        }
+        
+        .selectable-text p {
+            margin-bottom: 15px;
+        }
+        
+        /* 自定义选择菜单 */
+        .selection-menu {
+            position: fixed;
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            gap: 5px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        
+        .selection-menu.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .menu-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+        
+        .menu-btn:active {
+            transform: translateY(0);
+        }
+        
+        .menu-btn.copy {
+            background: #27ae60;
+        }
+        
+        .menu-btn.share {
+            background: #9b59b6;
+        }
+        
+        .menu-btn.translate {
+            background: #e74c3c;
+        }
+        
+        .menu-btn.search {
+            background: #f39c12;
+        }
+        
+        /* 选择高亮效果 */
+        ::selection {
+            background-color: rgba(52, 152, 219, 0.3);
+        }
+        
+        .custom-highlight {
+            background-color: rgba(52, 152, 219, 0.3);
+            border-radius: 2px;
+        }
+        
+        /* 状态指示器 */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2ecc71;
+        }
+        
+        .status-dot.inactive {
+            background: #e74c3c;
+        }
+        
+        /* 操作面板 */
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .control-btn {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .control-btn:hover {
+            background: #2980b9;
+        }
+        
+        .control-btn.disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        /* 结果展示区 */
+        .result-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-content {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* 提示信息 */
+        .tips {
+            background: #fff8e1;
+            border: 1px solid #ffd54f;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .tips h3 {
+            color: #f57c00;
+            margin-bottom: 8px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+            
+            .control-btn {
+                width: 100%;
+            }
+            
+            .menu-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                min-width: 50px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 H5移动端文本选择Demo</h1>
+        
+        <div class="status-indicator">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">准备就绪</span>
+        </div>
+        
+        <div class="demo-section">
+            <h2>示例文本</h2>
+            <div class="tips">
+                <h3>💡 使用说明</h3>
+                <p>在下方文本上长按并拖动手指选择文本，选择后会出现自定义操作菜单。</p>
+                <p>支持：复制、分享、翻译、搜索等功能。</p>
+            </div>
+            
+            <div class="selectable-text" id="selectableText">
+                <p>JavaScript 是一种高级的、解释型的编程语言。它是互联网的核心技术之一，绝大多数现代网站都使用 JavaScript，所有现代 Web 浏览器（无论是桌面、手机还是其他设备上的浏览器）都包含 JavaScript 解释器，使其成为世界上最流行的编程语言之一。</p>
+                
+                <p>随着 Node.js 等平台的出现，JavaScript 也可以用于服务器端编程。如今，JavaScript 已经演变为一种全栈开发语言，能够处理从前端用户界面到后端服务器逻辑的各个方面。</p>
+                
+                <p>ECMAScript 是 JavaScript 的标准化版本，旨在确保不同浏览器之间的兼容性。ES6（ECMAScript 2015）引入了许多现代功能，如箭头函数、类、模块、模板字符串等，极大地改善了开发体验。</p>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>操作面板</h2>
+            <div class="control-panel">
+                <button class="control-btn" id="enableSelect">启用文本选择</button>
+                <button class="control-btn" id="disableSelect">禁用文本选择</button>
+                <button class="control-btn" id="clearSelection">清除选择</button>
+                <button class="control-btn" id="testSelection">测试选择功能</button>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>选择结果</h2>
+            <div class="result-panel">
+                <div class="result-title">
+                    <span>📋 已选文本</span>
+                </div>
+                <div class="result-content" id="selectedText">暂无选择</div>
+                
+                <div class="result-title" style="margin-top: 20px;">
+                    <span>📊 操作记录</span>
+                </div>
+                <div class="result-content" id="operationLog">等待操作...</div>
+            </div>
+        </div>
+        
+        <div class="tips">
+            <h3>🔧 技术要点</h3>
+            <p>1. 使用 <code>selectstart</code> 和 <code>selectionchange</code> 事件监听文本选择</p>
+            <p>2. 自定义选择菜单替换系统默认菜单</p>
+            <p>3. 正确处理移动端触摸事件和长按手势</p>
+            <p>4. 兼容不同浏览器和设备的文本选择行为</p>
+        </div>
+    </div>
+    
+    <!-- 自定义选择菜单 -->
+    <div class="selection-menu" id="selectionMenu">
+        <button class="menu-btn copy" data-action="copy">📋 复制</button>
+        <button class="menu-btn share" data-action="share">📤 分享</button>
+        <button class="menu-btn translate" data-action="translate">🌐 翻译</button>
+        <button class="menu-btn search" data-action="search">🔍 搜索</button>
+    </div>
+    
+    <script>
+    class MobileTextSelector {
+        constructor() {
+            this.selectedText = '';
+            this.selectionMenu = document.getElementById('selectionMenu');
+            this.selectableText = document.getElementById('selectableText');
+            this.statusDot = document.getElementById('statusDot');
+            this.statusText = document.getElementById('statusText');
+            this.selectedTextDisplay = document.getElementById('selectedText');
+            this.operationLog = document.getElementById('operationLog');
+            this.isEnabled = true;
+            this.touchStartTime = 0;
+            this.touchStartPosition = { x: 0, y: 0 };
+            this.longPressTimer = null;
+            this.isTouchDevice = 'ontouchstart' in window;
+            
+            this.init();
+        }
+        
+        init() {
+            this.setupEventListeners();
+            this.updateStatus();
+            this.addLog('文本选择器初始化完成');
+        }
+        
+        setupEventListeners() {
+            // 监听文本选择事件
+            document.addEventListener('selectionchange', this.handleSelectionChange.bind(this));
+            
+            // 监听选择开始事件
+            document.addEventListener('selectstart', this.handleSelectStart.bind(this));
+            
+            // 移动端触摸事件
+            if (this.isTouchDevice) {
+                this.setupTouchEvents();
+            }
+            
+            // 自定义菜单按钮事件
+            this.selectionMenu.addEventListener('click', this.handleMenuClick.bind(this));
+            
+            // 点击页面其他地方隐藏菜单
+            document.addEventListener('click', (e) => {
+                if (!this.selectionMenu.contains(e.target) && e.target !== this.selectableText) {
+                    this.hideMenu();
+                }
+            });
+            
+            // 控制按钮事件
+            document.getElementById('enableSelect').addEventListener('click', () => {
+                this.enableSelection();
+                this.addLog('文本选择功能已启用');
+            });
+            
+            document.getElementById('disableSelect').addEventListener('click', () => {
+                this.disableSelection();
+                this.addLog('文本选择功能已禁用');
+            });
+            
+            document.getElementById('clearSelection').addEventListener('click', () => {
+                this.clearSelection();
+                this.addLog('已清除文本选择');
+            });
+            
+            document.getElementById('testSelection').addEventListener('click', () => {
+                this.testSelection();
+                this.addLog('测试选择功能');
+            });
+        }
+        
+        setupTouchEvents() {
+            // 触摸开始
+            this.selectableText.addEventListener('touchstart', (e) => {
+                if (!this.isEnabled) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                this.touchStartTime = Date.now();
+                this.touchStartPosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+                
+                // 设置长按定时器
+                this.longPressTimer = setTimeout(() => {
+                    this.addLog('长按手势检测到（可能开始选择文本）');
+                }, 500);
+                
+            }, { passive: true });
+            
+            // 触摸移动
+            this.selectableText.addEventListener('touchmove', (e) => {
+                // 清除长按定时器，因为用户已经开始移动
+                if (this.longPressTimer) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+                
+                // 如果是文本选择模式，不阻止默认行为
+                if (this.isEnabled) {
+                    // 允许浏览器处理文本选择
+                    return;
+                }
+                
+                // 如果禁用选择，可以阻止滚动
+                e.preventDefault();
+                
+            }, { passive: false });
+            
+            // 触摸结束
+            this.selectableText.addEventListener('touchend', () => {
+                if (this.longPressTimer) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+            }, { passive: true });
+            
+            // 阻止默认的长按菜单（在移动端）
+            this.selectableText.addEventListener('contextmenu', (e) => {
+                if (this.isEnabled) {
+                    e.preventDefault();
+                    this.addLog('阻止了系统默认的长按菜单');
+                }
+            });
+        }
+        
+        handleSelectStart(e) {
+            if (!this.isEnabled) {
+                e.preventDefault();
+                this.addLog('文本选择被阻止（功能已禁用）');
+                return;
+            }
+            
+            this.addLog('开始选择文本');
+            this.statusText.textContent = '选择文本中...';
+            this.statusDot.classList.remove('inactive');
+        }
+        
+        handleSelectionChange() {
+            const selection = window.getSelection();
+            const text = selection.toString().trim();
+            
+            if (text && this.isEnabled) {
+                this.selectedText = text;
+                this.selectedTextDisplay.textContent = text;
+                this.selectedTextDisplay.classList.add('pulse');
+                
+                setTimeout(() => {
+                    this.selectedTextDisplay.classList.remove('pulse');
+                }, 500);
+                
+                // 显示自定义菜单
+                this.showMenuAtSelection(selection);
+                
+                this.addLog(`选择了文本: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+                this.statusText.textContent = `已选择 ${text.length} 个字符`;
+            } else {
+                // 如果没有选择文本，隐藏菜单
+                this.hideMenu();
+                this.statusText.textContent = this.isEnabled ? '准备就绪' : '功能已禁用';
+            }
+        }
+        
+        showMenuAtSelection(selection) {
+            if (!selection.rangeCount) return;
+            
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            
+            if (rect.width === 0 && rect.height === 0) {
+                // 可能是在触摸设备上，使用最后一个插入点
+                const fakeRange = document.createRange();
+                fakeRange.setStart(range.startContainer, range.startOffset);
+                const fakeRect = fakeRange.getBoundingClientRect();
+                if (fakeRect.width === 0 && fakeRect.height === 0) return;
+                
+                this.positionMenu(fakeRect);
+            } else {
+                this.positionMenu(rect);
+            }
+            
+            this.selectionMenu.classList.add('show');
+        }
+        
+        positionMenu(rect) {
+            const menu = this.selectionMenu;
+            const menuWidth = menu.offsetWidth;
+            const menuHeight = menu.offsetHeight;
+            
+            let left = rect.left + rect.width / 2 - menuWidth / 2;
+            let top = rect.top - menuHeight - 10;
+            
+            // 确保菜单不超出视口
+            if (top < 10) top = rect.bottom + 10;
+            if (left < 10) left = 10;
+            if (left + menuWidth > window.innerWidth - 10) {
+                left = window.innerWidth - menuWidth - 10;
+            }
+            
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+        }
+        
+        hideMenu() {
+            this.selectionMenu.classList.remove('show');
+        }
+        
+        handleMenuClick(e) {
+            const action = e.target.dataset.action;
+            if (!action || !this.selectedText) return;
+            
+            switch (action) {
+                case 'copy':
+                    this.copyText();
+                    break;
+                case 'share':
+                    this.shareText();
+                    break;
+                case 'translate':
+                    this.translateText();
+                    break;
+                case 'search':
+                    this.searchText();
+                    break;
+            }
+            
+            this.hideMenu();
+            window.getSelection().removeAllRanges();
+        }
+        
+        copyText() {
+            navigator.clipboard.writeText(this.selectedText)
+                .then(() => {
+                    this.addLog('✅ 文本已复制到剪贴板');
+                    this.showToast('✅ 已复制到剪贴板');
+                })
+                .catch(err => {
+                    this.addLog('❌ 复制失败: ' + err.message);
+                    this.showToast('❌ 复制失败');
+                });
+        }
+        
+        shareText() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '分享文本',
+                    text: this.selectedText,
+                    url: window.location.href
+                })
+                .then(() => this.addLog('✅ 分享成功'))
+                .catch(err => this.addLog('❌ 分享取消: ' + err.message));
+            } else {
+                this.addLog('⚠️ 当前浏览器不支持Web Share API');
+                this.showToast('⚠️ 浏览器不支持直接分享');
+            }
+        }
+        
+        translateText() {
+            const encodedText = encodeURIComponent(this.selectedText);
+            const url = `https://translate.google.com/?text=${encodedText}`;
+            window.open(url, '_blank');
+            this.addLog('🌐 跳转到翻译页面');
+        }
+        
+        searchText() {
+            const encodedText = encodeURIComponent(this.selectedText);
+            const url = `https://www.google.com/search?q=${encodedText}`;
+            window.open(url, '_blank');
+            this.addLog('🔍 跳转到搜索页面');
+        }
+        
+        enableSelection() {
+            this.isEnabled = true;
+            this.selectableText.style.userSelect = 'text';
+            this.selectableText.style.webkitUserSelect = 'text';
+            this.updateStatus();
+        }
+        
+        disableSelection() {
+            this.isEnabled = false;
+            this.selectableText.style.userSelect = 'none';
+            this.selectableText.style.webkitUserSelect = 'none';
+            this.clearSelection();
+            this.updateStatus();
+        }
+        
+        clearSelection() {
+            window.getSelection().removeAllRanges();
+            this.selectedText = '';
+            this.selectedTextDisplay.textContent = '暂无选择';
+            this.hideMenu();
+        }
+        
+        testSelection() {
+            // 创建一个测试范围并选择
+            const range = document.createRange();
+            const textNode = this.selectableText.firstChild;
+            
+            if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+                range.setStart(textNode, 10);
+                range.setEnd(textNode, 30);
+                
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                this.addLog('🔄 测试选择已创建');
+            }
+        }
+        
+        updateStatus() {
+            if (this.isEnabled) {
+                this.statusDot.classList.remove('inactive');
+                this.statusText.textContent = '功能已启用';
+            } else {
+                this.statusDot.classList.add('inactive');
+                this.statusText.textContent = '功能已禁用';
+            }
+        }
+        
+        addLog(message) {
+            const time = new Date().toLocaleTimeString();
+            const logEntry = `[${time}] ${message}\n`;
+            
+            this.operationLog.textContent = logEntry + this.operationLog.textContent;
+            
+            // 限制日志条数
+            const lines = this.operationLog.textContent.split('\n');
+            if (lines.length > 20) {
+                this.operationLog.textContent = lines.slice(0, 20).join('\n');
+            }
+        }
+        
+        showToast(message) {
+            // 创建临时提示
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 50px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 25px;
+                z-index: 1001;
+                font-size: 14px;
+                animation: fadeInOut 2s ease;
+            `;
+            
+            // 添加动画样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                document.body.removeChild(toast);
+                document.head.removeChild(style);
+            }, 2000);
+        }
+    }
+    
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', () => {
+        new MobileTextSelector();
+        
+        // 添加一些提示
+        console.log('📱 H5文本选择Demo已加载');
+        console.log('ℹ️ 支持功能：');
+        console.log('  1. 移动端触摸文本选择');
+        console.log('  2. 自定义选择菜单');
+        console.log('  3. 复制、分享、翻译、搜索');
+        console.log('  4. 启用/禁用选择功能');
+    });
+    </script>
+</body>
+</html>

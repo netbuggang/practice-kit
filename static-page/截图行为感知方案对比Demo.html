@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>截图行为感知方案对比 Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    h1,
+    h2 {
+      color: #1890ff;
+    }
+
+    /* 方案卡片 */
+    .card {
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      background: #fafafa;
+    }
+
+    .status {
+      margin: 10px 0;
+      padding: 8px;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* 悬浮按钮 */
+    .feedback-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1890ff;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 24px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 999;
+      display: none;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .feedback-fab.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 弹窗 */
+    .modal-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .guide-modal {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-btns button {
+      margin: 0 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .action-btns .primary {
+      background: #1890ff;
+      color: white;
+    }
+
+    .action-btns .default {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    img {
+      height: 100px;
+      width: 100px;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>截图行为感知方案对比 Demo</h1>
+  <p>本 Demo 演示了 4 种“感知用户截图”的技术方案，实际中仅 <strong>JSBridge</strong> 可靠，其余均为间接推测。</p>
+
+  <!-- 方案1：Page Visibility API -->
+  <div class="card">
+    <h2>1. Page Visibility API（监听页面隐藏/显示）</h2>
+    <p>当用户切换应用或锁屏时，页面会进入 hidden 状态，可能是在截图。</p>
+    <div class="status" id="visibilityStatus">等待页面隐藏...</div>
+  </div>
+
+  <!-- 方案2：结合Copy事件 -->
+  <div class="card">
+    <h2>2. 结合 Copy 事件（Visibility + Copy）</h2>
+    <p>用户常先复制文本再截图，监听复制行为可辅助判断。</p>
+    <div class="status" id="copyStatus">等待复制操作...</div>
+  </div>
+
+  <!-- 方案3：JSBridge注入 -->
+  <div class="card">
+    <h2>3. JSBridge 注入（客户端通知H5）</h2>
+    <p>APP内可通过JSBridge主动通知H5“已截图”。</p>
+    <button onclick="simulateJSBridge()">模拟客户端发送截图事件</button>
+    <div class="status" id="jsbridgeStatus">等待客户端通知...</div>
+  </div>
+
+  <!-- 方案4：监听剪贴板图片 -->
+  <div class="card">
+    <h2>4. 监听剪贴板图片（不可行）</h2>
+    <p>尝试读取剪贴板图片，但浏览器出于安全限制，无法实现。</p>
+    <button onclick="attemptReadClipboard()">尝试主动读取剪贴板</button>
+    <div class="status" id="clipboardStatus">等待用户截图...</div>
+    <img id="destination" src="" />
+  </div>
+
+  <!-- 悬浮按钮 -->
+  <div id="feedbackBtn" class="feedback-fab">📸 问题反馈</div>
+
+  <!-- 引导弹窗 -->
+  <div id="modalMask" class="modal-mask">
+    <div class="guide-modal">
+      <h3>检测到截图行为！</h3>
+      <p>是否需要分享或提交反馈？</p>
+      <div class="action-btns">
+        <button class="primary" onclick="goToShare()">立即分享</button>
+        <button class="default" onclick="closeModal()">暂不需要</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    const modalMask = document.getElementById('modalMask');
+    let hasShown = false;
+
+    // 显示引导按钮
+    function showFeedbackButton() {
+      if (hasShown) return;
+      feedbackBtn.classList.add('show');
+      hasShown = true;
+    }
+
+    // === 方案1：监听页面可见性变化 ===
+    document.addEventListener('visibilitychange', () => {
+      const statusEl = document.getElementById('visibilityStatus');
+      if (document.visibilityState === 'hidden') {
+        statusEl.textContent = '✅ 页面已隐藏（可能正在截图）';
+        showFeedbackButton();
+      } else {
+        statusEl.textContent = '↩️ 页面恢复可见';
+      }
+    });
+
+    // === 方案2：监听复制事件 ===
+    document.addEventListener('copy', () => {
+      const statusEl = document.getElementById('copyStatus');
+      statusEl.textContent = '✅ 检测到复制操作（可能准备截图）';
+      showFeedbackButton();
+    });
+
+    // === 方案3：JSBridge 模拟 ===
+    function simulateJSBridge() {
+      const statusEl = document.getElementById('jsbridgeStatus');
+      statusEl.textContent = '✅ 客户端通知：用户已截图！';
+      showFeedbackButton();
+    }
+
+    // 模拟从APP接收消息（如 React Native、AlipayJSBridge）
+    window.receiveScreenshotEvent = function () {
+      simulateJSBridge();
+    };
+
+    // === 方案4：尝试读取剪贴板图片（不可行）===
+    async function attemptReadClipboard() {
+      const statusEl = document.getElementById('clipboardStatus');
+      try {
+        const items = await navigator.clipboard.read();
+        const imageItem = items.find(item => item.types.includes('image/png'));
+        if (imageItem) {
+          statusEl.textContent = '✅ 读取到图片！';
+          const blob = await imageItem.getType("image/png");
+          const src = URL.createObjectURL(blob);
+          console.log("✅ 读取到图片！", src);
+
+          const destinationImage = document.querySelector("#destination");
+          destinationImage.src = src;
+        } else {
+          statusEl.textContent = '❌ 剪贴板无图片';
+        }
+      } catch (err) {
+        statusEl.textContent = `❌ 无法读取剪贴板：${err.message}`;
+        console.warn('剪贴板读取失败（预期行为）:', err);
+      }
+    }
+
+    // === 弹窗控制 ===
+    feedbackBtn.addEventListener('click', () => {
+      modalMask.style.display = 'flex';
+    });
+
+    function closeModal() {
+      modalMask.style.display = 'none';
+    }
+
+    function goToShare() {
+      alert('分享功能触发！可集成微信/微博分享');
+      closeModal();
+    }
+
+    modalMask.addEventListener('click', (e) => {
+      if (e.target === modalMask) closeModal();
+    });
+  </script>
+
+</body>
+
+</html>

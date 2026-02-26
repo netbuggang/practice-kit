@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景7：阅读进度指示器 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .article-title {
+      font-size: 2.5rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .article-meta {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f1f5f9;
+      display: flex;
+      gap: 2rem;
+    }
+
+    .article-content {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .article-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .article-content h2 {
+      font-size: 1.8rem;
+      margin: 2.5rem 0 1rem;
+      color: #1e293b;
+    }
+
+    .article-content blockquote {
+      background: #f8fafc;
+      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 12px 12px 0;
+      font-style: italic;
+      color: #475569;
+    }
+
+    /* 顶部进度条 */
+    .progress-bar-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      z-index: 1001;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    /* 圆形进度指示器 */
+    .progress-circle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #667eea;
+      z-index: 1000;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .progress-circle:hover {
+      transform: scale(1.1);
+    }
+
+    .progress-circle svg {
+      width: 70px;
+      height: 70px;
+      position: absolute;
+    }
+
+    .progress-circle circle {
+      fill: none;
+      stroke: #667eea;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 0.3s;
+    }
+
+    .progress-circle-bg {
+      stroke: #e2e8f0;
+      stroke-width: 4;
+    }
+
+    .progress-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 章节标记 */
+    .section-marker {
+      position: sticky;
+      top: 20px;
+      left: 0;
+      background: #f1f5f9;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #475569;
+      margin-bottom: 1rem;
+      display: inline-block;
+      transition: all 0.3s;
+      border: 1px solid #e2e8f0;
+    }
+
+    .section-marker.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* 阅读进度卡片 */
+    .reading-stats {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 2rem;
+      z-index: 1000;
+      font-size: 0.9rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #667eea;
+    }
+
+    .stat-dot.read {
+      background: #22c55e;
+    }
+
+    /* 返回顶部按钮 */
+    .back-to-top {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+      border: 1px solid #e2e8f0;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-5px);
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>📈 场景7：阅读进度指示器</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <!-- 顶部进度条 -->
+  <div class="progress-bar-top">
+    <div class="progress-fill" id="progressBar"></div>
+  </div>
+
+  <!-- 圆形进度指示器 -->
+  <div class="progress-circle" id="progressCircle" onclick="scrollToTop()">
+    <svg viewBox="0 0 100 100">
+      <circle class="progress-circle-bg" cx="50" cy="50" r="46" />
+      <circle class="progress-circle-fill" cx="50" cy="50" r="46" id="progressCircleFill" />
+    </svg>
+    <span class="progress-text" id="progressPercent">0%</span>
+  </div>
+
+  <!-- 阅读统计卡片 -->
+  <div class="reading-stats">
+    <div class="stat-item">
+      <span class="stat-dot"></span>
+      <span id="sectionRead">0/8 章节</span>
+    </div>
+    <div class="stat-item">
+      <span>⏱️</span>
+      <span id="readTime">0 min</span>
+    </div>
+  </div>
+
+  <!-- 返回顶部按钮 -->
+  <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+    ↑
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 通过 IntersectionObserver 监测文章各章节的可见性，
+      结合滚动位置计算阅读进度。提供多种进度展示方式：顶部进度条、圆形进度、章节计数。
+    </div>
+
+    <div class="article-container">
+      <h1 class="article-title">IntersectionObserver 完全指南</h1>
+
+      <div class="article-meta">
+        <span>👤 作者：DeepSeek</span>
+        <span>📅 发布日期：2026-02-12</span>
+        <span>⏱️ 阅读时长：8分钟</span>
+      </div>
+
+      <!-- 章节1 -->
+      <div class="section-marker" id="section-marker-1">📖 第一章：简介</div>
+      <section id="section1" class="article-content">
+        <h2>1. 什么是 IntersectionObserver？</h2>
+        <p>IntersectionObserver 是现代浏览器提供的一个 API，用于异步观察目标元素与祖先元素或顶级文档视口的交叉状态。简单来说，它能够检测一个元素是否出现在视口中，或者出现在视口的什么位置。</p>
+        <p>在过去，我们通常通过监听 scroll 事件并调用 getBoundingClientRect() 来实现类似的功能。但这种做法有几个缺点：</p>
+        <ul>
+          <li>scroll 事件触发频繁，容易造成性能问题</li>
+          <li>getBoundingClientRect() 会引起重排</li>
+          <li>代码复杂，需要手动计算位置</li>
+        </ul>
+        <p>IntersectionObserver 解决了这些问题，它提供了声明式的方式，异步执行，不会阻塞主线程。</p>
+        <blockquote>
+          "IntersectionObserver 是现代前端性能优化的利器，特别适合实现懒加载、无限滚动、曝光统计等功能。"
+        </blockquote>
+      </section>
+
+      <!-- 章节2 -->
+      <div class="section-marker" id="section-marker-2">🔧 第二章：基本用法</div>
+      <section id="section2" class="article-content">
+        <h2>2. 基本用法与配置</h2>
+        <p>创建一个 IntersectionObserver 实例非常简单：</p>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px; overflow-x: auto;">
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      console.log('元素进入视口');
+    }
+  });
+}, {
+  root: null, // 默认为浏览器视口
+  rootMargin: '0px',
+  threshold: 0.5 // 50% 可见时触发
+});
+
+observer.observe(targetElement);</pre>
+        <p>配置项说明：</p>
+        <ul>
+          <li><strong>root</strong>: 用作视口的元素，默认为浏览器视口</li>
+          <li><strong>rootMargin</strong>: 扩大或缩小视口区域</li>
+          <li><strong>threshold</strong>: 触发回调的阈值，可以是0-1之间的数值或数组</li>
+        </ul>
+      </section>
+
+      <!-- 章节3 -->
+      <div class="section-marker" id="section-marker-3">⚡ 第三章：性能优势</div>
+      <section id="section3" class="article-content">
+        <h2>3. 性能对比与传统方案</h2>
+        <p>让我们对比一下传统方案和 IntersectionObserver 的性能差异：</p>
+
+        <h3>传统 scroll 方案</h3>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+window.addEventListener('scroll', () => {
+  const rect = element.getBoundingClientRect();
+  if (rect.top < window.innerHeight) {
+    // 元素进入视口
+  }
+});</pre>
+
+        <p>这种方案的问题：</p>
+        <ul>
+          <li>每次滚动都会触发</li>
+          <li>getBoundingClientRect 强制同步布局</li>
+          <li>无法精确控制触发时机</li>
+        </ul>
+
+        <h3>IntersectionObserver 方案</h3>
+        <ul>
+          <li>异步执行，不阻塞主线程</li>
+          <li>浏览器优化，批量处理</li>
+          <li>精确控制阈值</li>
+        </ul>
+      </section>
+
+      <!-- 章节4 -->
+      <div class="section-marker" id="section-marker-4">🎯 第四章：高级用法</div>
+      <section id="section4" class="article-content">
+        <h2>4. 高级特性与技巧</h2>
+
+        <h3>4.1 多阈值监听</h3>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+const observer = new IntersectionObserver(callback, {
+  threshold: [0, 0.25, 0.5, 0.75, 1]
+});</pre>
+
+        <h3>4.2 动态 rootMargin</h3>
+        <p>通过设置负值的 rootMargin，可以实现元素即将进入视口时提前加载：</p>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+const observer = new IntersectionObserver(callback, {
+  rootMargin: '200px 0px' // 提前200px触发
+});</pre>
+
+        <h3>4.3 观察多个元素</h3>
+        <p>一个 observer 可以观察任意数量的元素，浏览器会自动批量处理。</p>
+      </section>
+
+      <!-- 章节5 -->
+      <div class="section-marker" id="section-marker-5">📊 第五章：实际应用</div>
+      <section id="section5" class="article-content">
+        <h2>5. 七大应用场景详解</h2>
+
+        <h3>5.1 图片懒加载</h3>
+        <p>当图片进入视口时，将 data-src 替换为 src，触发加载。</p>
+
+        <h3>5.2 无限滚动</h3>
+        <p>在列表底部放置哨兵元素，当哨兵进入视口时加载更多。</p>
+
+        <h3>5.3 动画触发</h3>
+        <p>元素进入视口时添加动画类，产生入场效果。</p>
+
+        <h3>5.4 广告统计</h3>
+        <p>精准统计广告曝光次数，确保计费准确性。</p>
+
+        <h3>5.5 吸顶导航</h3>
+        <p>通过哨兵元素控制导航栏的吸顶状态。</p>
+
+        <h3>5.6 视频自动播放</h3>
+        <p>视频进入视口时自动播放，离开时暂停。</p>
+
+        <h3>5.7 阅读进度</h3>
+        <p>统计各章节阅读情况，展示阅读进度（当前场景）。</p>
+      </section>
+
+      <!-- 章节6 -->
+      <div class="section-marker" id="section-marker-6">📱 第六章：兼容性</div>
+      <section id="section6" class="article-content">
+        <h2>6. 浏览器兼容性与降级</h2>
+        <p>IntersectionObserver 支持所有现代浏览器，包括 Chrome 51+、Firefox 55+、Safari 12.1+、Edge 15+。</p>
+
+        <h3>降级方案</h3>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+if ('IntersectionObserver' in window) {
+  // 使用 IntersectionObserver
+} else {
+  // 使用传统的 scroll 事件
+  window.addEventListener('scroll', throttle(checkVisibility));
+}</pre>
+
+        <p>也可以使用官方 polyfill：<code>npm install intersection-observer</code></p>
+      </section>
+
+      <!-- 章节7 -->
+      <div class="section-marker" id="section-marker-7">✨ 第七章：最佳实践</div>
+      <section id="section7" class="article-content">
+        <h2>7. 最佳实践与性能优化</h2>
+        <ul>
+          <li><strong>合理设置阈值</strong>：根据实际需求选择合适的阈值，避免过于敏感</li>
+          <li><strong>及时取消观察</strong>：元素完成使命后调用 unobserve</li>
+          <li><strong>使用 rootMargin 预加载</strong>：提前加载提升体验</li>
+          <li><strong>避免在回调中执行重操作</strong>：回调应尽量轻量</li>
+          <li><strong>结合 requestIdleCallback</strong>：非紧急操作在空闲时执行</li>
+        </ul>
+      </section>
+
+      <!-- 章节8 -->
+      <div class="section-marker" id="section-marker-8">📝 第八章：总结</div>
+      <section id="section8" class="article-content">
+        <h2>8. 总结</h2>
+        <p>IntersectionObserver 是现代前端开发中不可或缺的 API，它让原本复杂的视口检测变得简单高效。通过本文的七个场景，相信你已经掌握了它的核心用法。</p>
+        <p>在实际项目中，合理运用 IntersectionObserver 可以大幅提升性能，改善用户体验。建议将它作为前端性能优化的标配工具。</p>
+
+        <div
+          style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-top: 2rem;">
+          <h3 style="color: white;">🎉 恭喜你读完了全文！</h3>
+          <p>你已阅读 8 个章节，掌握了 IntersectionObserver 的核心知识。</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // 获取所有章节
+    const sections = document.querySelectorAll('section[id]');
+    const markers = document.querySelectorAll('.section-marker');
+    let startTime = Date.now();
+    let readSections = new Set();
+
+    // 圆形进度条
+    const circle = document.getElementById('progressCircleFill');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const backToTop = document.getElementById('backToTop');
+    const sectionReadEl = document.getElementById('sectionRead');
+    const readTimeEl = document.getElementById('readTime');
+
+    // 计算圆形进度条的周长
+    const radius = 46;
+    const circumference = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = `${circumference}`;
+    circle.style.strokeDashoffset = `${circumference}`;
+
+    // 更新阅读进度
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      const maxScroll = documentHeight - windowHeight;
+      const progress = Math.round((scrollTop / maxScroll) * 100);
+
+      // 更新顶部进度条
+      progressBar.style.width = `${progress}%`;
+
+      // 更新圆形进度条
+      const offset = circumference - (progress / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+      progressPercent.textContent = `${progress}%`;
+
+      // 显示/隐藏返回顶部按钮
+      if (scrollTop > 500) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+
+      // 更新阅读时间
+      const elapsed = Math.floor((Date.now() - startTime) / 60000); // 分钟
+      readTimeEl.textContent = `${elapsed} min`;
+    }
+
+    // IntersectionObserver 观察章节
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const index = Array.from(sections).indexOf(entry.target);
+
+        if (entry.isIntersecting) {
+          // 章节进入视口
+          readSections.add(entry.target.id);
+
+          // 高亮对应的章节标记
+          markers.forEach((marker, i) => {
+            if (i === index) {
+              marker.classList.add('active');
+            }
+          });
+
+          // 章节标记有特殊样式
+          entry.target.style.opacity = '1';
+        } else {
+          // 章节离开视口
+          markers.forEach((marker, i) => {
+            if (i === index) {
+              marker.classList.remove('active');
+            }
+          });
+        }
+
+        // 更新已读章节统计
+        sectionReadEl.textContent = `${readSections.size}/${sections.length} 章节`;
+      });
+    }, {
+      threshold: 0.3,
+      rootMargin: '-20px 0px -20px 0px'
+    });
+
+    // 观察所有章节
+    sections.forEach(section => {
+      sectionObserver.observe(section);
+    });
+
+    // 监听滚动更新进度
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(updateProgress);
+    });
+
+    // 返回顶部功能
+    window.scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    };
+
+    // 初始化
+    updateProgress();
+
+    // 页面离开时记录阅读时间
+    window.addEventListener('beforeunload', () => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      console.log(`阅读时长: ${elapsed}秒，已读章节: ${readSections.size}/${sections.length}`);
+    });
+  </script>
+</body>
+
+</html>

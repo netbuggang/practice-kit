@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Speech API - 文本朗读演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .controls-section {
+            margin-bottom: 30px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4f46e5;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #4338ca;
+            transform: scale(1.1);
+        }
+
+        .value-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: #4f46e5;
+            font-size: 14px;
+        }
+
+        .voice-selector {
+            margin-bottom: 25px;
+        }
+
+        .voice-select-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .voice-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        .voice-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .voice-option-group {
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            margin: 4px 0;
+        }
+
+        .voice-option {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .voice-option:hover {
+            background: #f1f5f9;
+        }
+
+        .voice-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .voice-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .voice-details {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .voice-type {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .type-local {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-cloud {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .voice-lang {
+            color: #94a3b8;
+        }
+
+        .buttons-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .progress-section {
+            margin-bottom: 25px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-section {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .status-info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+        }
+
+        .status-warning {
+            background: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fed7aa;
+        }
+
+        .compatibility-warning {
+            background: #fffbeb;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #d97706;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .browser-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .browser-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .browser-supported::after {
+            content: "✅";
+        }
+
+        .browser-unsupported::after {
+            content: "❌";
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .current-voice-display {
+            background: #f8faff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+        }
+
+        .current-voice-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .current-voice-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .current-voice-details {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Web Speech API 朗读演示</h1>
+            <p class="subtitle">基于浏览器原生 SpeechSynthesis 的文本朗读功能</p>
+        </header>
+
+        <div class="content">
+            <!-- 输入区域 -->
+            <div class="input-section">
+                <label class="control-label">朗读文本</label>
+                <textarea class="text-input" id="textInput" placeholder="请输入要朗读的文本...">
+欢迎使用 Web Speech API 文本朗读功能！这是一个基于浏览器原生语音合成的演示。
+
+你可以调整语速、音调和音量，选择不同的语音，体验高质量的文本朗读服务。
+
+SpeechSynthesis API 是现代浏览器提供的强大功能，支持多种语言和语音选择，无需任何第三方服务。
+                </textarea>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="buttons-section">
+                <button class="btn btn-primary" id="startBtn" onclick="speechManager.startSpeaking()">
+                    <span class="icon">▶️</span>开始朗读
+                </button>
+                <button class="btn btn-secondary" id="pauseBtn" onclick="speechManager.pauseSpeaking()" disabled>
+                    <span class="icon">⏸️</span>暂停
+                </button>
+                <button class="btn btn-secondary" id="resumeBtn" onclick="speechManager.resumeSpeaking()" disabled>
+                    <span class="icon">⏯️</span>继续
+                </button>
+                <button class="btn btn-secondary" id="stopBtn" onclick="speechManager.stopSpeaking()" disabled>
+                    <span class="icon">⏹️</span>停止
+                </button>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>朗读进度</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- 状态显示 -->
+            <div class="status-section" id="statusArea">
+                <div id="statusMessage">准备就绪，请输入文本并开始朗读</div>
+            </div>
+
+            <!-- 语音选择 -->
+            <div class="voice-selector">
+                <h3 class="section-title">🎙️ 选择语音</h3>
+                <div class="voice-select-group">
+                    <div class="select-wrapper">
+                        <select class="voice-select" id="voiceSelect">
+                            <option value="">正在加载语音列表...</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 当前语音显示 -->
+                    <div class="current-voice-display" id="currentVoiceDisplay" style="display: none;">
+                        <div class="current-voice-info">
+                            <div>
+                                <div class="current-voice-name" id="currentVoiceName">语音名称</div>
+                                <div class="current-voice-details">
+                                    <span id="currentVoiceLang">语言</span>
+                                    <span class="voice-type" id="currentVoiceType">类型</span>
+                                </div>
+                            </div>
+                            <div class="voice-details">
+                                <span>语速: <span id="currentVoiceRate">1.0</span></span>
+                                <span>音调: <span id="currentVoicePitch">1.0</span></span>
+                                <span>音量: <span id="currentVoiceVolume">1.0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 语音参数控制 -->
+            <div class="controls-section">
+                <h3 class="section-title">⚙️ 语音设置</h3>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label class="control-label">语速</label>
+                        <div class="control-row">
+                            <input type="range" class="slider" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
+                            <span class="value-display" id="rateValue">1.0</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">音调</label>
+                        <div class="control-row">
+                            <input type="range" class="slider" id="pitchSlider" min="0.5" max="2" step="0.1" value="1">
+                            <span class="value-display" id="pitchValue">1.0</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">音量</label>
+                        <div class="control-row">
+                            <input type="range" class="slider" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                            <span class="value-display" id="volumeValue">1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 兼容性提示 -->
+            <div class="compatibility-warning">
+                <div class="warning-title">⚠️ 浏览器兼容性提示</div>
+                <p>SpeechSynthesis API 在现代浏览器中支持良好，但在某些环境下可能受限：</p>
+                <div class="browser-list">
+                    <div class="browser-item browser-supported">Chrome 33+</div>
+                    <div class="browser-item browser-supported">Edge 14+</div>
+                    <div class="browser-item browser-supported">Safari 7+</div>
+                    <div class="browser-item browser-supported">Firefox 49+</div>
+                    <div class="browser-item browser-supported">WebView on iOS</div>
+                    <div class="browser-item browser-unsupported">WebView Android</div>
+                    <div class="browser-item browser-unsupported">旧版浏览器</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Web Speech API 演示 &copy; 2025 | 基于浏览器原生语音合成技术</p>
+        </footer>
+    </div>
+
+    <script>
+        class SpeechSynthesisManager {
+            constructor() {
+                this.synth = window.speechSynthesis;
+                this.utterance = null;
+                this.isSupported = !!window.speechSynthesis;
+                this.isSpeaking = false;
+                this.isPaused = false;
+                this.voices = [];
+                this.currentVoice = null;
+                this.localVoices = [];
+                this.cloudVoices = [];
+                
+                this.init();
+            }
+
+            async init() {
+                if (!this.isSupported) {
+                    this.showStatus('❌ 您的浏览器不支持 SpeechSynthesis API', 'error');
+                    this.disableControls();
+                    return;
+                }
+
+                // 加载语音列表
+                await this.loadVoices();
+                
+                // 设置事件监听
+                this.setupEventListeners();
+                
+                // 设置默认语音（优先选择中文语音）
+                this.selectDefaultVoice();
+                
+                this.showStatus('✅ SpeechSynthesis API 已就绪，可以选择语音开始朗读', 'success');
+            }
+
+            async loadVoices() {
+                return new Promise((resolve) => {
+                    const voices = this.synth.getVoices();
+                    if (voices.length > 0) {
+                        this.processVoices(voices);
+                        this.renderVoiceSelect();
+                        resolve(voices);
+                    } else {
+                        // 如果语音列表为空，等待 voiceschanged 事件
+                        this.synth.onvoiceschanged = () => {
+                            const loadedVoices = this.synth.getVoices();
+                            this.processVoices(loadedVoices);
+                            this.renderVoiceSelect();
+                            resolve(loadedVoices);
+                        };
+                    }
+                });
+            }
+
+            processVoices(voices) {
+                this.voices = voices;
+                
+                // 按本地和云端分组
+                this.localVoices = voices.filter(voice => voice.localService);
+                this.cloudVoices = voices.filter(voice => !voice.localService);
+                
+                console.log('本地语音:', this.localVoices.length);
+                console.log('云端语音:', this.cloudVoices.length);
+            }
+
+            renderVoiceSelect() {
+                const select = document.getElementById('voiceSelect');
+                select.innerHTML = '';
+
+                if (this.voices.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = '未检测到可用语音';
+                    select.appendChild(option);
+                    return;
+                }
+
+                // 添加分组选项
+                this.addVoiceGroup(select, 'local', '🎯 本地语音', this.localVoices);
+                this.addVoiceGroup(select, 'cloud', '☁️ 云端语音', this.cloudVoices);
+            }
+
+            addVoiceGroup(select, groupId, groupName, voices) {
+                if (voices.length === 0) return;
+
+                // 组标题
+                const groupOption = document.createElement('option');
+                groupOption.disabled = true;
+                groupOption.textContent = `━━━━━━ ${groupName} (${voices.length}个) ━━━━━━`;
+                select.appendChild(groupOption);
+
+                // 组内语音选项
+                voices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    option.dataset.voice = JSON.stringify({
+                        name: voice.name,
+                        lang: voice.lang,
+                        localService: voice.localService
+                    });
+                    
+                    const type = voice.localService ? '本地' : '云端';
+                    const typeEmoji = voice.localService ? '💻' : '☁️';
+                    option.textContent = `${typeEmoji} ${voice.name} (${voice.lang}) [${type}]`;
+                    
+                    select.appendChild(option);
+                });
+            }
+
+            selectDefaultVoice() {
+                // 优先选择中文语音
+                const chineseVoices = this.voices.filter(voice => 
+                    voice.lang.includes('zh') || voice.lang.includes('CN')
+                );
+                
+                if (chineseVoices.length > 0) {
+                    this.currentVoice = chineseVoices[0];
+                } else if (this.voices.length > 0) {
+                    this.currentVoice = this.voices[0];
+                }
+                
+                this.updateVoiceSelection();
+            }
+
+            setupEventListeners() {
+                // 语音选择事件
+                document.getElementById('voiceSelect').addEventListener('change', (e) => {
+                    const selectedOption = e.target.options[e.target.selectedIndex];
+                    if (selectedOption.dataset.voice) {
+                        const voiceData = JSON.parse(selectedOption.dataset.voice);
+                        const voice = this.voices.find(v => v.name === voiceData.name);
+                        if (voice) {
+                            this.selectVoice(voice);
+                        }
+                    }
+                });
+
+                // 滑块事件
+                document.getElementById('rateSlider').addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    document.getElementById('rateValue').textContent = value;
+                    document.getElementById('currentVoiceRate').textContent = value;
+                });
+
+                document.getElementById('pitchSlider').addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    document.getElementById('pitchValue').textContent = value;
+                    document.getElementById('currentVoicePitch').textContent = value;
+                });
+
+                document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    document.getElementById('volumeValue').textContent = value;
+                    document.getElementById('currentVoiceVolume').textContent = value;
+                });
+
+                // 文本输入变化时重置进度
+                document.getElementById('textInput').addEventListener('input', () => {
+                    this.resetProgress();
+                });
+            }
+
+            selectVoice(voice) {
+                this.currentVoice = voice;
+                this.updateVoiceSelection();
+                
+                const type = voice.localService ? '本地语音' : '云端语音';
+                const emoji = voice.localService ? '💻' : '☁️';
+                this.showStatus(`${emoji} 已选择语音: ${voice.name} (${type})`, 'info');
+            }
+
+            updateVoiceSelection() {
+                const select = document.getElementById('voiceSelect');
+                const display = document.getElementById('currentVoiceDisplay');
+                
+                if (this.currentVoice) {
+                    // 设置下拉框选中项
+                    for (let i = 0; i < select.options.length; i++) {
+                        const option = select.options[i];
+                        if (option.dataset.voice) {
+                            const voiceData = JSON.parse(option.dataset.voice);
+                            if (voiceData.name === this.currentVoice.name) {
+                                select.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 更新当前语音显示
+                    document.getElementById('currentVoiceName').textContent = this.currentVoice.name;
+                    document.getElementById('currentVoiceLang').textContent = this.currentVoice.lang;
+                    
+                    const typeElement = document.getElementById('currentVoiceType');
+                    typeElement.textContent = this.currentVoice.localService ? '本地语音' : '云端语音';
+                    typeElement.className = `voice-type ${this.currentVoice.localService ? 'type-local' : 'type-cloud'}`;
+                    
+                    display.style.display = 'block';
+                } else {
+                    display.style.display = 'none';
+                }
+            }
+
+            startSpeaking() {
+                const text = document.getElementById('textInput').value.trim();
+                if (!text) {
+                    this.showStatus('请输入要朗读的文本', 'warning');
+                    return;
+                }
+
+                if (this.isSpeaking && !this.isPaused) {
+                    this.showStatus('正在朗读中...', 'info');
+                    return;
+                }
+
+                // 停止当前朗读
+                this.stopSpeaking();
+
+                this.utterance = new SpeechSynthesisUtterance(text);
+                
+                // 设置语音参数
+                this.utterance.rate = parseFloat(document.getElementById('rateSlider').value);
+                this.utterance.pitch = parseFloat(document.getElementById('pitchSlider').value);
+                this.utterance.volume = parseFloat(document.getElementById('volumeSlider').value);
+                this.utterance.voice = this.currentVoice;
+                this.utterance.lang = this.currentVoice ? this.currentVoice.lang : 'zh-CN';
+
+                // 设置事件监听
+                this.utterance.onstart = () => {
+                    this.isSpeaking = true;
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus('🎵 朗读开始...', 'success');
+                    this.startProgressSimulation();
+                };
+
+                this.utterance.onend = () => {
+                    this.isSpeaking = false;
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus('✅ 朗读完成', 'success');
+                    this.completeProgress();
+                };
+
+                this.utterance.onerror = (event) => {
+                    this.isSpeaking = false;
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus(`❌ 朗读错误: ${event.error}`, 'error');
+                    this.resetProgress();
+                };
+
+                this.utterance.onpause = () => {
+                    this.isPaused = true;
+                    this.updateControls();
+                    this.showStatus('⏸️ 朗读已暂停', 'info');
+                };
+
+                this.utterance.onresume = () => {
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus('⏯️ 继续朗读', 'info');
+                };
+
+                // 开始朗读
+                this.synth.speak(this.utterance);
+            }
+
+            pauseSpeaking() {
+                if (this.isSpeaking && !this.isPaused) {
+                    this.synth.pause();
+                    this.isPaused = true;
+                    this.updateControls();
+                    this.showStatus('⏸️ 已暂停', 'info');
+                }
+            }
+
+            resumeSpeaking() {
+                if (this.isSpeaking && this.isPaused) {
+                    this.synth.resume();
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus('⏯️ 继续朗读', 'info');
+                }
+            }
+
+            stopSpeaking() {
+                if (this.isSpeaking || this.isPaused) {
+                    this.synth.cancel();
+                    this.isSpeaking = false;
+                    this.isPaused = false;
+                    this.updateControls();
+                    this.showStatus('⏹️ 已停止', 'info');
+                    this.resetProgress();
+                }
+            }
+
+            updateControls() {
+                const startBtn = document.getElementById('startBtn');
+                const pauseBtn = document.getElementById('pauseBtn');
+                const resumeBtn = document.getElementById('resumeBtn');
+                const stopBtn = document.getElementById('stopBtn');
+
+                startBtn.disabled = this.isSpeaking && !this.isPaused;
+                pauseBtn.disabled = !this.isSpeaking || this.isPaused;
+                resumeBtn.disabled = !this.isSpeaking || !this.isPaused;
+                stopBtn.disabled = !this.isSpeaking && !this.isPaused;
+            }
+
+            disableControls() {
+                document.querySelectorAll('.btn, .slider, .voice-select').forEach(element => {
+                    element.disabled = true;
+                });
+            }
+
+            startProgressSimulation() {
+                this.resetProgress();
+                let progress = 0;
+                const textLength = document.getElementById('textInput').value.length;
+                const estimatedTime = textLength / (this.utterance.rate * 150); // 估算时间
+                
+                this.progressInterval = setInterval(() => {
+                    if (progress >= 100) {
+                        clearInterval(this.progressInterval);
+                    } else {
+                        progress += 100 / (estimatedTime * 10); // 每100ms更新一次
+                        this.updateProgress(Math.min(progress, 99));
+                    }
+                }, 100);
+            }
+
+            updateProgress(percentage) {
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressText');
+                
+                progressFill.style.width = percentage + '%';
+                progressText.textContent = Math.round(percentage) + '%';
+            }
+
+            completeProgress() {
+                clearInterval(this.progressInterval);
+                this.updateProgress(100);
+            }
+
+            resetProgress() {
+                clearInterval(this.progressInterval);
+                this.updateProgress(0);
+            }
+
+            showStatus(message, type = 'info') {
+                const statusArea = document.getElementById('statusArea');
+                const statusMessage = document.getElementById('statusMessage');
+                
+                statusMessage.textContent = message;
+                statusArea.className = 'status-section';
+                
+                switch (type) {
+                    case 'success':
+                        statusArea.classList.add('status-success');
+                        break;
+                    case 'error':
+                        statusArea.classList.add('status-error');
+                        break;
+                    case 'warning':
+                        statusArea.classList.add('status-warning');
+                        break;
+                    default:
+                        statusArea.classList.add('status-info');
+                }
+            }
+        }
+
+        // 初始化语音管理器
+        const speechManager = new SpeechSynthesisManager();
+
+        // 全局函数供按钮调用
+        window.startSpeaking = () => speechManager.startSpeaking();
+        window.pauseSpeaking = () => speechManager.pauseSpeaking();
+        window.resumeSpeaking = () => speechManager.resumeSpeaking();
+        window.stopSpeaking = () => speechManager.stopSpeaking();
+    </script>
+</body>
+</html>

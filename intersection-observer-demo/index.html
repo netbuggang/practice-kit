@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntersectionObserver 7大应用场景</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  <header class="hero">
+    <h1>👁️ IntersectionObserver</h1>
+    <a class="subtitle" href="https://yuque.antfin.com/lingren.wg/mmkb0z/dut8xi2zeepaiwv5" target="_blank">《
+      IntersectionObserver：让网页学会"看见"的神奇API》</a>
+  </header>
+
+  <div class="container">
+    <div class="intro-card">
+      <h2>什么是 IntersectionObserver？</h2>
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API"
+          target="_blank">IntersectionObserver</a>
+        是现代浏览器提供的API，用于**异步观察目标元素与祖先元素或视口的交叉状态**。它能够高效地检测元素是否进入/离开视口，是性能优化的利器。</p>
+      <div class="feature-grid">
+        <div class="feature-item">✅ 异步监听，不阻塞主线程</div>
+        <div class="feature-item">✅ 性能远优于 scroll + getBoundingClientRect</div>
+        <div class="feature-item">✅ 精准控制触发阈值</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">🎯 主要应用场景</h2>
+
+    <div class="scene-grid">
+      <!-- 场景1 -->
+      <a href="./pages/1-lazy-load.html" class="scene-card">
+        <div class="scene-icon">📸</div>
+        <h3>图片懒加载</h3>
+        <p>只有当图片进入视口时才加载真实图片，提升首屏加载速度</p>
+        <div class="tag">性能优化</div>
+      </a>
+
+      <!-- 场景2 -->
+      <a href="./pages/2-infinite-scroll.html" class="scene-card">
+        <div class="scene-icon">♾️</div>
+        <h3>无限滚动</h3>
+        <p>滚动到底部自动加载更多内容，提升用户体验</p>
+        <div class="tag">用户体验</div>
+      </a>
+
+      <!-- 场景3 -->
+      <a href="./pages/3-animation.html" class="scene-card">
+        <div class="scene-icon">🎬</div>
+        <h3>动画触发</h3>
+        <p>元素进入视口时触发动画，提升页面活力</p>
+        <div class="tag">交互设计</div>
+      </a>
+
+      <!-- 场景4 -->
+      <a href="./pages/4-ad-stat.html" class="scene-card">
+        <div class="scene-icon">📊</div>
+        <h3>广告统计</h3>
+        <p>统计广告真实曝光次数，只有用户看到才计数</p>
+        <div class="tag">数据分析</div>
+      </a>
+
+      <!-- 场景5 -->
+      <a href="./pages/5-sticky-nav.html" class="scene-card">
+        <div class="scene-icon">📌</div>
+        <h3>吸顶导航</h3>
+        <p>导航栏在滚动过某个区域后吸顶，方便用户跳转</p>
+        <div class="tag">UI组件</div>
+      </a>
+
+      <!-- 场景6 -->
+      <a href="./pages/6-video-autoplay.html" class="scene-card">
+        <div class="scene-icon">▶️</div>
+        <h3>视频自动播放</h3>
+        <p>视频进入视口时自动播放，离开时暂停</p>
+        <div class="tag">多媒体</div>
+      </a>
+
+      <!-- 场景7 -->
+      <a href="./pages/7-reading-progress.html" class="scene-card">
+        <div class="scene-icon">📈</div>
+        <h3>阅读进度指示器</h3>
+        <p>显示用户当前阅读进度，增强沉浸感</p>
+        <div class="tag">反馈</div>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>IntersectionObserver · 演示项目</p>
+  </footer>
+</body>
+
+</html>

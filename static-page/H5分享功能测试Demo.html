@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5分享功能测试Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 24px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            margin-bottom: 15px;
+            color: #4a5568;
+            font-size: 18px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+        
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+        
+        .status.info {
+            background: #bee3f8;
+            color: #1a365d;
+            display: block;
+        }
+        
+        .file-input {
+            margin: 15px 0;
+        }
+        
+        .custom-share-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+        
+        .share-content {
+            background: white;
+            width: 100%;
+            padding: 30px 20px;
+            border-radius: 20px 20px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .share-content.show {
+            transform: translateY(0);
+        }
+        
+        .share-platforms {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .platform-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            background: #f7fafc;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        
+        .platform-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .close-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .compatibility {
+            background: #fffaf0;
+            border-left-color: #dd6b20;
+            margin-top: 20px;
+        }
+        
+        .compatibility-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #fed7aa;
+        }
+        
+        .compatibility-item:last-child {
+            border-bottom: none;
+        }
+        
+        .support {
+            color: #38a169;
+            font-weight: bold;
+        }
+        
+        .unsupport {
+            color: #e53e3e;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 H5分享功能测试Demo</h1>
+        
+        <!-- 方法一：Web Share API -->
+        <div class="section">
+            <h2>方法一：Web Share API（推荐）</h2>
+            <button class="btn" id="webShareBtn">📤 使用Web Share API分享</button>
+            <button class="btn btn-secondary" id="webShareFileBtn">📎 分享文件（选择图片）</button>
+            <input type="file" id="fileInput" class="file-input" accept="image/*" style="display: none;">
+            <div id="webShareStatus" class="status"></div>
+        </div>
+        
+        <!-- 方法二：自定义分享面板 -->
+        <div class="section">
+            <h2>方法二：自定义分享面板</h2>
+            <button class="btn" id="customShareBtn">🎨 打开自定义分享面板</button>
+            <div id="customShareStatus" class="status"></div>
+        </div>
+        
+        <!-- 方法三：平台特定分享 -->
+        <div class="section">
+            <h2>方法三：平台特定分享</h2>
+            <button class="btn" id="wechatShareBtn">💬 模拟微信分享</button>
+            <button class="btn" id="qqShareBtn">🐧 模拟QQ分享</button>
+            <button class="btn" id="weiboShareBtn">🌟 分享到微博</button>
+            <div id="platformShareStatus" class="status"></div>
+        </div>
+        
+        <!-- 方法四：复制链接 -->
+        <div class="section">
+            <h2>方法四：复制链接</h2>
+            <button class="btn" id="copyLinkBtn">📋 复制页面链接</button>
+            <div id="copyStatus" class="status"></div>
+        </div>
+        
+        <!-- 浏览器兼容性信息 -->
+        <div class="section compatibility">
+            <h2>📊 浏览器兼容性检测</h2>
+            <div id="compatibilityInfo"></div>
+        </div>
+    </div>
+    
+    <!-- 自定义分享面板 -->
+    <div class="custom-share-panel" id="customSharePanel">
+        <div class="share-content" id="shareContent">
+            <h3 style="text-align: center; margin-bottom: 20px;">分享到</h3>
+            <div class="share-platforms">
+                <button class="platform-btn" onclick="shareToPlatform('wechat')">
+                    <span class="platform-icon">💬</span>
+                    <span>微信</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('qq')">
+                    <span class="platform-icon">🐧</span>
+                    <span>QQ</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('weibo')">
+                    <span class="platform-icon">🌟</span>
+                    <span>微博</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('qzone')">
+                    <span class="platform-icon">📌</span>
+                    <span>QQ空间</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('douyin')">
+                    <span class="platform-icon">🎵</span>
+                    <span>抖音</span>
+                </button>
+                <button class="platform-btn" onclick="copyLink()">
+                    <span class="platform-icon">📋</span>
+                    <span>复制链接</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('more')">
+                    <span class="platform-icon">⋯</span>
+                    <span>更多</span>
+                </button>
+                <button class="platform-btn" onclick="shareToPlatform('system')">
+                    <span class="platform-icon">📤</span>
+                    <span>系统分享</span>
+                </button>
+            </div>
+            <button class="close-btn" onclick="closeCustomSharePanel()">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // 分享工具类
+        class ShareUtils {
+            constructor() {
+                this.isWechat = /MicroMessenger/i.test(navigator.userAgent);
+                this.isQQ = /QQ/i.test(navigator.userAgent);
+                this.isWeibo = /Weibo/i.test(navigator.userAgent);
+            }
+            
+            // 方法1: Web Share API
+            async webShare(options = {}) {
+                const {
+                    title = 'H5分享功能测试Demo',
+                    text = '这是一个测试H5分享功能的页面，快来体验吧！',
+                    url = window.location.href,
+                    files = []
+                } = options;
+                
+                if (navigator.share) {
+                    try {
+                        let shareData = { title, text };
+                        
+                        if (files.length > 0) {
+                            if (navigator.canShare && navigator.canShare({ files })) {
+                                shareData.files = files;
+                            }
+                        } else {
+                            shareData.url = url;
+                        }
+                        
+                        await navigator.share(shareData);
+                        this.showStatus('webShareStatus', '✅ Web Share API分享成功！', 'success');
+                        return true;
+                    } catch (error) {
+                        if (error.name !== 'AbortError') {
+                            this.showStatus('webShareStatus', '❌ 分享取消或失败: ' + error.message, 'error');
+                        }
+                        return false;
+                    }
+                } else {
+                    this.showStatus('webShareStatus', '❌ 您的浏览器不支持Web Share API', 'error');
+                    return false;
+                }
+            }
+            
+            // 方法2: 自定义分享
+            customShare() {
+                const panel = document.getElementById('customSharePanel');
+                const content = document.getElementById('shareContent');
+                panel.style.display = 'flex';
+                setTimeout(() => content.classList.add('show'), 10);
+            }
+            
+            // 方法3: 平台特定分享
+            platformShare(platform) {
+                const title = 'H5分享功能测试Demo';
+                const text = '这是一个测试H5分享功能的页面';
+                const url = window.location.href;
+                
+                switch(platform) {
+                    case 'wechat':
+                        this.showStatus('platformShareStatus', '💬 微信分享：需要接入微信JS-SDK，当前为模拟演示', 'info');
+                        break;
+                    case 'qq':
+                        if (this.isQQ) {
+                            const qqUrl = `mqqapi://share/to_fri?file_type=news&title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+                            window.location.href = qqUrl;
+                        } else {
+                            this.showStatus('platformShareStatus', '🐧 QQ分享：模拟QQ浏览器分享（请在QQ中打开）', 'info');
+                        }
+                        break;
+                    case 'weibo':
+                        const weiboUrl = `http://service.weibo.com/share/share.php?title=${encodeURIComponent(title + ' - ' + text)}&url=${encodeURIComponent(url)}`;
+                        window.open(weiboUrl, '_blank', 'width=600,height=400');
+                        this.showStatus('platformShareStatus', '🌟 已打开微博分享页面', 'success');
+                        break;
+                }
+            }
+            
+            // 方法4: 复制链接
+            async copyToClipboard() {
+                const text = window.location.href + ' - H5分享功能测试Demo';
+                
+                try {
+                    if (navigator.clipboard) {
+                        await navigator.clipboard.writeText(text);
+                        this.showStatus('copyStatus', '✅ 链接已复制到剪贴板: ' + text, 'success');
+                    } else {
+                        // 兼容旧浏览器
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        if (successful) {
+                            this.showStatus('copyStatus', '✅ 链接已复制到剪贴板', 'success');
+                        } else {
+                            throw new Error('复制失败');
+                        }
+                    }
+                } catch (err) {
+                    this.showStatus('copyStatus', '❌ 复制失败，请手动复制: ' + text, 'error');
+                }
+            }
+            
+            // 显示状态信息
+            showStatus(elementId, message, type) {
+                const element = document.getElementById(elementId);
+                element.textContent = message;
+                element.className = `status ${type}`;
+                
+                // 3秒后自动隐藏
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+            
+            // 检测兼容性
+            checkCompatibility() {
+                const info = document.getElementById('compatibilityInfo');
+                const compatibilities = [
+                    { name: 'Web Share API', supported: !!navigator.share },
+                    { name: 'Clipboard API', supported: !!navigator.clipboard },
+                    { name: '文件分享', supported: !!(navigator.share && navigator.canShare) },
+                    { name: '微信环境', supported: this.isWechat },
+                    { name: 'QQ环境', supported: this.isQQ },
+                    { name: '微博环境', supported: this.isWeibo }
+                ];
+                
+                let html = '';
+                compatibilities.forEach(item => {
+                    html += `
+                        <div class="compatibility-item">
+                            <span>${item.name}</span>
+                            <span class="${item.supported ? 'support' : 'unsupport'}">
+                                ${item.supported ? '✅ 支持' : '❌ 不支持'}
+                            </span>
+                        </div>
+                    `;
+                });
+                
+                info.innerHTML = html;
+            }
+        }
+
+        // 初始化
+        const shareUtils = new ShareUtils();
+        
+        // 页面加载完成后检测兼容性
+        document.addEventListener('DOMContentLoaded', function() {
+            shareUtils.checkCompatibility();
+            
+            // 绑定事件
+            document.getElementById('webShareBtn').addEventListener('click', () => {
+                shareUtils.webShare();
+            });
+            
+            document.getElementById('webShareFileBtn').addEventListener('click', () => {
+                document.getElementById('fileInput').click();
+            });
+            
+            document.getElementById('fileInput').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    shareUtils.webShare({ files: [file] });
+                }
+            });
+            
+            document.getElementById('customShareBtn').addEventListener('click', () => {
+                shareUtils.customShare();
+            });
+            
+            document.getElementById('wechatShareBtn').addEventListener('click', () => {
+                shareUtils.platformShare('wechat');
+            });
+            
+            document.getElementById('qqShareBtn').addEventListener('click', () => {
+                shareUtils.platformShare('qq');
+            });
+            
+            document.getElementById('weiboShareBtn').addEventListener('click', () => {
+                shareUtils.platformShare('weibo');
+            });
+            
+            document.getElementById('copyLinkBtn').addEventListener('click', () => {
+                shareUtils.copyToClipboard();
+            });
+        });
+
+        // 自定义分享面板功能
+        function shareToPlatform(platform) {
+            switch(platform) {
+                case 'wechat':
+                    shareUtils.showStatus('customShareStatus', '💬 分享到微信（模拟）', 'info');
+                    break;
+                case 'qq':
+                    shareUtils.showStatus('customShareStatus', '🐧 分享到QQ（模拟）', 'info');
+                    break;
+                case 'weibo':
+                    shareUtils.platformShare('weibo');
+                    break;
+                case 'qzone':
+                    shareUtils.showStatus('customShareStatus', '📌 分享到QQ空间（模拟）', 'info');
+                    break;
+                case 'douyin':
+                    shareUtils.showStatus('customShareStatus', '🎵 分享到抖音（模拟）', 'info');
+                    break;
+                case 'more':
+                    shareUtils.webShare();
+                    break;
+                case 'system':
+                    shareUtils.webShare();
+                    break;
+            }
+            closeCustomSharePanel();
+        }
+        
+        function copyLink() {
+            shareUtils.copyToClipboard();
+            closeCustomSharePanel();
+        }
+        
+        function closeCustomSharePanel() {
+            const panel = document.getElementById('customSharePanel');
+            const content = document.getElementById('shareContent');
+            content.classList.remove('show');
+            setTimeout(() => {
+                panel.style.display = 'none';
+            }, 300);
+        }
+
+        // 点击面板外部关闭
+        document.getElementById('customSharePanel').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCustomSharePanel();
+            }
+        });
+    </script>
+</body>
+</html>

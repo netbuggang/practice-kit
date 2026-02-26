@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景2：无限滚动 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .scroll-container {
+      height: 500px;
+      overflow-y: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+
+    .item-card {
+      background: white;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #667eea;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sentinel {
+      height: 40px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .stats {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>♾️ 场景2：无限滚动</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 在列表底部放置一个哨兵元素（sentinel）。
+      当哨兵进入视口时，触发加载更多数据的操作，实现无限滚动。
+    </div>
+
+    <div class="stats">
+      <span id="itemCount">当前加载了 10 项</span>
+    </div>
+
+    <div class="scroll-container" id="scrollContainer">
+      <div id="itemList"></div>
+      <div class="sentinel" id="sentinel">
+        <span class="loading"></span> 加载更多中...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = true;
+    const pageSize = 10;
+
+    // 模拟API请求
+    async function fetchItems(page) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const items = Array.from({ length: pageSize }, (_, i) => ({
+            id: (page - 1) * pageSize + i + 1,
+            title: `第 ${page} 页 - 项目 ${i + 1}`,
+            content: `这是第 ${(page - 1) * pageSize + i + 1} 条数据的内容描述。`
+          }));
+          resolve(items);
+        }, 800); // 模拟网络延迟
+      });
+    }
+
+    // 渲染列表
+    function renderItems(items) {
+      const list = document.getElementById('itemList');
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.innerHTML = `
+                    <h4>${item.title}</h4>
+                    <p style="color: #64748b; margin-top: 0.5rem;">${item.content}</p>
+                    <small style="color: #94a3b8;">ID: ${item.id}</small>
+                `;
+        list.appendChild(div);
+      });
+
+      document.getElementById('itemCount').textContent =
+        `当前加载了 ${list.children.length} 项`;
+    }
+
+    // 加载更多数据
+    async function loadMore() {
+      if (isLoading || !hasMore) return;
+
+      isLoading = true;
+      const sentinel = document.getElementById('sentinel');
+      sentinel.style.opacity = '1';
+
+      try {
+        const newItems = await fetchItems(currentPage);
+
+        if (newItems.length < pageSize) {
+          hasMore = false;
+          sentinel.innerHTML = '🎉 已经到底了';
+        }
+
+        renderItems(newItems);
+        currentPage++;
+      } catch (error) {
+        console.error('加载失败:', error);
+        sentinel.innerHTML = '❌ 加载失败，请重试';
+      } finally {
+        isLoading = false;
+
+        if (hasMore) {
+          sentinel.innerHTML = '<span class="loading"></span> 加载更多中...';
+        }
+      }
+    }
+
+    // 初始化加载第一页
+    loadMore();
+
+    // IntersectionObserver 实现
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && hasMore && !isLoading) {
+          loadMore();
+        }
+      });
+    }, {
+      root: document.getElementById('scrollContainer'),
+      threshold: 0.1
+    });
+
+    // 观察哨兵元素
+    observer.observe(document.getElementById('sentinel'));
+  </script>
+</body>
+
+</html>

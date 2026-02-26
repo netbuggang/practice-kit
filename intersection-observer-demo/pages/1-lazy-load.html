@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景1：图片懒加载 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .lazy-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #e2e8f0;
+      transition: opacity 0.3s;
+      opacity: 0.3;
+    }
+
+    .lazy-image.loaded {
+      opacity: 1;
+    }
+
+    .stats {
+      background: #667eea;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>📸 场景1：图片懒加载</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 图片的 src 初始设为占位图或空，真正的图片地址放在 data-src 中。
+      当图片进入视口时，用 IntersectionObserver 将 data-src 赋给 src，触发加载。
+    </div>
+
+    <div class="stats" id="loadedStats">已加载: 0 / 12 张</div>
+
+    <div class="image-grid" id="imageGrid"></div>
+
+    <div
+      style="height: 500px; background: linear-gradient(to bottom, #f1f5f9, #ffffff); display: flex; align-items: center; justify-content: center; border-radius: 12px; margin: 2rem 0;">
+      ⬇️ 下方还有更多图片，滚动查看懒加载效果
+    </div>
+
+    <div class="image-grid" id="imageGrid2"></div>
+  </div>
+
+  <script>
+    // 生成占位图片数据
+    const generateImages = (start, count) => {
+      return Array.from({ length: count }, (_, i) => ({
+        id: start + i,
+        src: `https://picsum.photos/400/300?random=${start + i}`,
+        alt: `Random Image ${start + i}`
+      }));
+    };
+
+    const images1 = generateImages(1, 12);
+    const images2 = generateImages(13, 12);
+
+    // 渲染图片网格
+    const renderGrid = (containerId, images) => {
+      const grid = document.getElementById(containerId);
+      grid.innerHTML = images.map(img => `
+                <div>
+                    <img 
+                        class="lazy-image" 
+                        data-src="${img.src}" 
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23e2e8f0'/%3E%3C/svg%3E"
+                        alt="${img.alt}"
+                        loading="lazy"
+                    >
+                </div>
+            `).join('');
+    };
+
+    renderGrid('imageGrid', images1);
+    renderGrid('imageGrid2', images2);
+
+    // IntersectionObserver 实现
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const src = img.dataset.src;
+
+          if (src) {
+            img.src = src;
+            img.classList.add('loaded');
+            observer.unobserve(img); // 加载后停止观察
+
+            // 更新计数
+            updateStats();
+          }
+        }
+      });
+    }, {
+      rootMargin: '50px', // 提前50px加载
+      threshold: 0.01
+    });
+
+    // 观察所有懒加载图片
+    document.querySelectorAll('.lazy-image').forEach(img => {
+      observer.observe(img);
+    });
+
+    // 统计已加载数量
+    function updateStats() {
+      const loaded = document.querySelectorAll('.lazy-image.loaded').length;
+      const total = document.querySelectorAll('.lazy-image').length;
+      document.getElementById('loadedStats').textContent = `已加载: ${loaded} / ${total} 张`;
+    }
+
+    // 初始统计
+    updateStats();
+  </script>
+</body>
+
+</html>

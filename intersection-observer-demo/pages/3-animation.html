@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景3：动画触发 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .animate-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      margin: 3rem 0;
+      text-align: center;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+    }
+
+    .animate-box.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .animate-box:nth-child(even) {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      transform: translateX(-50px);
+    }
+
+    .animate-box:nth-child(even).visible {
+      transform: translateX(0);
+    }
+
+    .progress-container {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .count-badge {
+      background: #667eea;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+
+    .trigger-info {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #94a3b8;
+      border-radius: 50%;
+      margin-right: 5px;
+      transition: background 0.3s;
+    }
+
+    .dot.active {
+      background: #667eea;
+      box-shadow: 0 0 10px #667eea;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>🎬 场景3：动画触发</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 元素默认透明且偏移，当进入视口时添加 .visible 类，
+      触发 CSS 过渡动画。离开视口时自动移除类，元素恢复原状。
+    </div>
+
+    <div class="progress-container">
+      <span id="triggerCount">已触发动画: 0 / 8</span>
+      <span class="count-badge">向下滚动体验效果</span>
+    </div>
+
+    <div class="trigger-info">
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <span class="dot" id="dot1"></span> 元素1
+        <span class="dot" id="dot2"></span> 元素2
+        <span class="dot" id="dot3"></span> 元素3
+        <span class="dot" id="dot4"></span> 元素4
+        <span class="dot" id="dot5"></span> 元素5
+        <span class="dot" id="dot6"></span> 元素6
+        <span class="dot" id="dot7"></span> 元素7
+        <span class="dot" id="dot8"></span> 元素8
+      </div>
+    </div>
+
+    <!-- 第一个动画元素 -->
+    <div class="animate-box" id="box1">
+      <h2>✨ 元素 1：淡入上浮效果</h2>
+      <p>opacity: 0 → 1, transform: translateY(50px) → 0</p>
+    </div>
+
+    <div
+      style="height: 300px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin: 2rem 0;">
+      ⬇️ 滚动继续体验其他动画元素
+    </div>
+
+    <!-- 第二个动画元素 -->
+    <div class="animate-box" id="box2">
+      <h2>🎉 元素 2：左滑进入</h2>
+      <p>transform: translateX(-50px) → 0</p>
+    </div>
+
+    <div
+      style="height: 300px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin: 2rem 0;">
+      ⬇️ 继续向下
+    </div>
+
+    <!-- 后续动画元素 -->
+    <div class="animate-box" id="box3">
+      <h2>🌟 元素 3：缩放进入</h2>
+      <p>transform: scale(0.8) → 1</p>
+    </div>
+
+    <div class="animate-box" id="box4">
+      <h2>🌈 元素 4：旋转进入</h2>
+      <p>transform: rotate(-10deg) → 0</p>
+    </div>
+
+    <div class="animate-box" id="box5">
+      <h2>⚡ 元素 5：弹性效果</h2>
+      <p>transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55)</p>
+    </div>
+
+    <div class="animate-box" id="box6">
+      <h2>🎯 元素 6：淡入淡出</h2>
+      <p>每次出现都重新触发</p>
+    </div>
+
+    <div class="animate-box" id="box7">
+      <h2>💫 元素 7：组合动画</h2>
+      <p>opacity + translate + scale</p>
+    </div>
+
+    <div class="animate-box" id="box8">
+      <h2>🎪 元素 8：最后一个</h2>
+      <p>看看全部触发后的效果</p>
+    </div>
+  </div>
+
+  <script>
+    const boxes = [
+      'box1', 'box2', 'box3', 'box4',
+      'box5', 'box6', 'box7', 'box8'
+    ].map(id => document.getElementById(id));
+
+    const dots = [
+      'dot1', 'dot2', 'dot3', 'dot4',
+      'dot5', 'dot6', 'dot7', 'dot8'
+    ].map(id => document.getElementById(id));
+
+    // IntersectionObserver 配置
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const index = boxes.indexOf(entry.target);
+        if (index !== -1) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            dots[index]?.classList.add('active');
+          } else {
+            entry.target.classList.remove('visible');
+            dots[index]?.classList.remove('active');
+          }
+        }
+      });
+
+      // 更新计数
+      const visibleCount = document.querySelectorAll('.animate-box.visible').length;
+      document.getElementById('triggerCount').innerHTML =
+        `已触发动画: ${visibleCount} / ${boxes.length}`;
+    }, {
+      threshold: 0.3, // 30% 进入视口时触发
+      rootMargin: '0px'
+    });
+
+    // 观察所有动画元素
+    boxes.forEach(box => {
+      if (box) observer.observe(box);
+    });
+
+    // 为第三个元素设置不同的阈值
+    if (boxes[2]) {
+      observer.unobserve(boxes[2]);
+      const specialObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            dots[2]?.classList.add('active');
+          } else {
+            entry.target.classList.remove('visible');
+            dots[2]?.classList.remove('active');
+          }
+        });
+      }, { threshold: 0.5 });
+      specialObserver.observe(boxes[2]);
+    }
+  </script>
+</body>
+
+</html>

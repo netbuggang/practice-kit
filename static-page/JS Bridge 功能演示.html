@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Bridge 功能演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border-left: 4px solid #4f46e5;
+        }
+
+        h2 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .function-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+
+        .function-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .function-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .function-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-size: 14px;
+            min-height: 20px;
+            white-space: pre-wrap;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>JS Bridge 功能演示</h1>
+            <p class="subtitle">展示常见原生功能调用示例</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2>设备信息</h2>
+                <div class="function-grid">
+                    <div class="function-card">
+                        <div class="function-title">获取设备信息</div>
+                        <div class="function-desc">获取设备型号、系统版本等基本信息</div>
+                        <button class="btn" onclick="getDeviceInfo()">调用</button>
+                        <div class="result" id="deviceInfoResult"></div>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">获取网络状态</div>
+                        <div class="function-desc">检测当前网络连接类型和状态</div>
+                        <button class="btn" onclick="getNetworkInfo()">调用</button>
+                        <div class="result" id="networkInfoResult"></div>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">获取电池状态</div>
+                        <div class="function-desc">获取电池电量及充电状态</div>
+                        <button class="btn" onclick="getBatteryInfo()">调用</button>
+                        <div class="result" id="batteryInfoResult"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>UI交互</h2>
+                <div class="function-grid">
+                    <div class="function-card">
+                        <div class="function-title">显示Toast</div>
+                        <div class="function-desc">显示短暂的消息提示</div>
+                        <button class="btn" onclick="showToast()">调用</button>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">显示确认对话框</div>
+                        <div class="function-desc">显示带确认/取消的对话框</div>
+                        <button class="btn" onclick="showConfirmDialog()">调用</button>
+                        <div class="result" id="dialogResult"></div>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">设置导航栏</div>
+                        <div class="function-desc">动态修改导航栏标题和颜色</div>
+                        <button class="btn" onclick="setNavigationBar()">调用</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>硬件功能</h2>
+                <div class="function-grid">
+                    <div class="function-card">
+                        <div class="function-title">获取位置信息</div>
+                        <div class="function-desc">获取设备当前的地理位置</div>
+                        <button class="btn" onclick="getLocation()">调用</button>
+                        <div class="result" id="locationResult"></div>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">扫描二维码</div>
+                        <div class="function-desc">调用相机扫描二维码或条形码</div>
+                        <button class="btn" onclick="scanQRCode()">调用</button>
+                        <div class="result" id="scanResult"></div>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">选择图片</div>
+                        <div class="function-desc">从相册选择或拍照获取图片</div>
+                        <button class="btn" onclick="chooseImage()">调用</button>
+                        <div class="result" id="imageResult"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>数据存储</h2>
+                <div class="function-grid">
+                    <div class="function-card">
+                        <div class="function-title">设置存储数据</div>
+                        <div class="function-desc">将数据存储到本地</div>
+                        <button class="btn" onclick="setStorage()">调用</button>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">获取存储数据</div>
+                        <div class="function-desc">从本地获取已存储的数据</div>
+                        <button class="btn" onclick="getStorage()">调用</button>
+                        <div class="result" id="storageResult"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>其他功能</h2>
+                <div class="function-grid">
+                    <div class="function-card">
+                        <div class="function-title">拨打电话</div>
+                        <div class="function-desc">调用系统拨号界面</div>
+                        <button class="btn" onclick="makePhoneCall()">调用</button>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">分享内容</div>
+                        <div class="function-desc">调用系统分享功能</div>
+                        <button class="btn" onclick="shareContent()">调用</button>
+                    </div>
+
+                    <div class="function-card">
+                        <div class="function-title">振动</div>
+                        <div class="function-desc">让设备振动</div>
+                        <button class="btn" onclick="vibrate()">调用</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="status info">
+                JS Bridge 就绪，可以调用功能
+            </div>
+
+            <div class="section">
+                <h2>JS Bridge 实现示例</h2>
+                <pre class="code-block" style="height: 200px;">
+                    // JS Bridge 核心实现
+                    window.JSBridge = {
+                        // 调用原生方法
+                        invoke: function (method, params, callback) {
+                            const callbackId = 'callback_' + new Date().getTime();
+
+                            // 注册回调函数
+                            if (callback) {
+                                window[callbackId] = callback;
+                            }
+
+                            // 创建消息对象
+                            const message = {
+                                method: method,
+                                params: params || {},
+                                callbackId: callbackId
+                            };
+
+                            // 发送消息给原生端
+                            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.JSBridge) {
+                                // iOS WKWebView
+                                window.webkit.messageHandlers.JSBridge.postMessage(message);
+                            } else if (window.JSBridgeAndroid) {
+                                // Android WebView
+                                window.JSBridgeAndroid.postMessage(JSON.stringify(message));
+                            } else {
+                                // 降级方案：使用 URL Scheme
+                                const url = 'jsbridge://' + method + '?' + JSON.stringify(params) + '&callback=' + callbackId;
+                                const iframe = document.createElement('iframe');
+                                iframe.src = url;
+                                document.body.appendChild(iframe);
+                                setTimeout(() => {
+                                    document.body.removeChild(iframe);
+                                }, 100);
+                            }
+                        },
+
+                        // 接收原生端回调
+                        receiveMessage: function (callbackId, result) {
+                            if (window[callbackId]) {
+                                window[callbackId](result);
+                                delete window[callbackId];
+                            }
+                        }
+                    };
+
+                    // 初始化 Bridge
+                    if (window.JSBridge) {
+                        document.getElementById('statusMessage').textContent = 'JS Bridge 初始化成功';
+                        document.getElementById('statusMessage').className = 'status success';
+                    } else {
+                        document.getElementById('statusMessage').textContent = 'JS Bridge 未就绪，当前为模拟模式';
+                        document.getElementById('statusMessage').className = 'status error';
+                    }
+                </pre>
+            </div>
+        </div>
+
+        <footer>
+            <p>JS Bridge 演示页面 &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // JS Bridge 核心实现
+        window.JSBridge = {
+            // 调用原生方法
+            invoke: function (method, params, callback) {
+                const callbackId = 'callback_' + new Date().getTime();
+
+                // 注册回调函数
+                if (callback) {
+                    window[callbackId] = callback;
+                }
+
+                // 创建消息对象
+                const message = {
+                    method: method,
+                    params: params || {},
+                    callbackId: callbackId
+                };
+
+                // 发送消息给原生端
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.JSBridge) {
+                    // iOS WKWebView
+                    window.webkit.messageHandlers.JSBridge.postMessage(message);
+                } else if (window.JSBridgeAndroid) {
+                    // Android WebView
+                    window.JSBridgeAndroid.postMessage(JSON.stringify(message));
+                } else {
+                    // 降级方案：使用 URL Scheme 或模拟实现
+                    console.log('调用原生方法: ' + method, params);
+
+                    // 模拟原生端响应
+                    setTimeout(() => {
+                        const result = simulateNativeResponse(method, params);
+                        if (callback) {
+                            callback(result);
+                        }
+                    }, 500);
+                }
+            },
+
+            // 接收原生端回调
+            receiveMessage: function (callbackId, result) {
+                if (window[callbackId]) {
+                    window[callbackId](result);
+                    delete window[callbackId];
+                }
+            }
+        };
+
+        // 模拟原生端响应
+        function simulateNativeResponse(method, params) {
+            switch (method) {
+                case 'getDeviceInfo':
+                    return {
+                        model: 'iPhone 13 Pro',
+                        system: 'iOS 15.4',
+                        platform: 'iOS',
+                        version: '15.4.1'
+                    };
+                case 'getNetworkInfo':
+                    return {
+                        type: 'wifi',
+                        effectiveType: '4g',
+                        isConnected: true
+                    };
+                case 'getBatteryInfo':
+                    return {
+                        level: 0.85,
+                        isCharging: false
+                    };
+                case 'getLocation':
+                    return {
+                        latitude: 39.9042,
+                        longitude: 116.4074,
+                        address: '北京市东城区'
+                    };
+                case 'scanQRCode':
+                    return {
+                        result: 'https://www.example.com',
+                        type: 'QR_CODE'
+                    };
+                case 'chooseImage':
+                    return {
+                        images: ['https://example.com/image1.jpg'],
+                        count: 1
+                    };
+                case 'getStorage':
+                    return {
+                        value: '这是之前存储的数据'
+                    };
+                case 'showConfirm':
+                    return {
+                        confirm: true
+                    };
+                default:
+                    return { success: true };
+            }
+        }
+
+        // 初始化 Bridge
+        if (window.JSBridge) {
+            document.getElementById('statusMessage').textContent = 'JS Bridge 初始化成功';
+            document.getElementById('statusMessage').className = 'status success';
+        } else {
+            document.getElementById('statusMessage').textContent = 'JS Bridge 未就绪，当前为模拟模式';
+            document.getElementById('statusMessage').className = 'status error';
+        }
+
+        // 功能调用示例
+        function getDeviceInfo() {
+            JSBridge.invoke('getDeviceInfo', {}, function (result) {
+                document.getElementById('deviceInfoResult').textContent =
+                    JSON.stringify(result, null, 2);
+            });
+        }
+
+        function getNetworkInfo() {
+            JSBridge.invoke('getNetworkInfo', {}, function (result) {
+                document.getElementById('networkInfoResult').textContent =
+                    JSON.stringify(result, null, 2);
+            });
+        }
+
+        function getBatteryInfo() {
+            JSBridge.invoke('getBatteryInfo', {}, function (result) {
+                document.getElementById('batteryInfoResult').textContent =
+                    JSON.stringify(result, null, 2);
+            });
+        }
+
+        function showToast() {
+            JSBridge.invoke('showToast', {
+                message: '这是一个Toast提示',
+                duration: 2000
+            });
+        }
+
+        function showConfirmDialog() {
+            JSBridge.invoke('showConfirm', {
+                title: '确认操作',
+                message: '您确定要执行此操作吗？',
+                confirmText: '确定',
+                cancelText: '取消'
+            }, function (result) {
+                document.getElementById('dialogResult').textContent =
+                    '用户选择了: ' + (result.confirm ? '确定' : '取消');
+            });
+        }
+
+        function setNavigationBar() {
+            JSBridge.invoke('setNavigationBar', {
+                title: '新标题',
+                backgroundColor: '#4f46e5'
+            });
+        }
+
+        function getLocation() {
+            JSBridge.invoke('getLocation', {}, function (result) {
+                document.getElementById('locationResult').textContent =
+                    JSON.stringify(result, null, 2);
+            });
+        }
+
+        function scanQRCode() {
+            JSBridge.invoke('scanQRCode', {}, function (result) {
+                document.getElementById('scanResult').textContent =
+                    '扫描结果: ' + result.result;
+            });
+        }
+
+        function chooseImage() {
+            JSBridge.invoke('chooseImage', {
+                count: 1,
+                sourceType: ['album', 'camera']
+            }, function (result) {
+                document.getElementById('imageResult').textContent =
+                    '选择了 ' + result.count + ' 张图片';
+            });
+        }
+
+        function setStorage() {
+            JSBridge.invoke('setStorage', {
+                key: 'demo_key',
+                value: '这是存储的测试数据'
+            }, function () {
+                alert('数据存储成功');
+            });
+        }
+
+        function getStorage() {
+            JSBridge.invoke('getStorage', {
+                key: 'demo_key'
+            }, function (result) {
+                document.getElementById('storageResult').textContent =
+                    '存储的值: ' + result.value;
+            });
+        }
+
+        function makePhoneCall() {
+            JSBridge.invoke('makePhoneCall', {
+                phoneNumber: '10086'
+            });
+        }
+
+        function shareContent() {
+            JSBridge.invoke('share', {
+                title: '分享标题',
+                content: '分享内容',
+                url: 'https://www.example.com'
+            });
+        }
+
+        function vibrate() {
+            JSBridge.invoke('vibrate', {
+                duration: 200
+            });
+        }
+    </script>
+</body>
+
+</html>

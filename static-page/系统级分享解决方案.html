@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统级分享解决方案</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>系统级分享解决方案</h1>
+
+    <button class="btn" onclick="tryAllShareMethods()">🚀 智能分享（推荐）</button>
+    <button class="btn" onclick="testWebShare()">📱 测试Web Share API</button>
+    <button class="btn" onclick="useNativeBridge()">🔗 尝试Native Bridge</button>
+    <button class="btn" onclick="useURLScheme()">🔧 使用URL Scheme</button>
+
+    <div id="status"></div>
+
+    <script>
+        class AdvancedShareUtils {
+            constructor() {
+                this.browserInfo = this.detectBrowser();
+            }
+
+            // 检测浏览器环境
+            detectBrowser() {
+                const ua = navigator.userAgent;
+                return {
+                    isWechat: /MicroMessenger/i.test(ua),
+                    isQQ: /QQ/i.test(ua),
+                    isQuark: /Quark/i.test(ua),
+                    isUC: /UCBrowser/i.test(ua),
+                    isWeibo: /Weibo/i.test(ua),
+                    isIOS: /iPad|iPhone|iPod/.test(ua),
+                    isAndroid: /Android/.test(ua),
+                    isChrome: /Chrome\/[.0-9]* Mobile/.test(ua),
+                    isSafari: /Safari/.test(ua) && !/Chrome/.test(ua)
+                };
+            }
+
+            // 方法1: 增强版Web Share API检测
+            async testWebShare() {
+                this.showStatus('测试Web Share API...', 'info');
+
+                if (!navigator.share) {
+                    this.showStatus('❌ 浏览器不支持Web Share API', 'error');
+                    return false;
+                }
+
+                // 测试是否能分享基础内容
+                const testData = {
+                    title: '测试分享',
+                    text: '这是一个测试分享内容',
+                    url: window.location.href
+                };
+
+                try {
+                    // 先检查是否支持分享
+                    if (navigator.canShare && !navigator.canShare(testData)) {
+                        this.showStatus('❌ 浏览器不支持分享此类内容', 'error');
+                        return false;
+                    }
+
+                    await navigator.share(testData);
+                    this.showStatus('✅ Web Share API 分享成功！', 'success');
+                    return true;
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        this.showStatus('⚠️ 用户取消了分享', 'info');
+                    } else {
+                        this.showStatus(`❌ Web Share API 错误: ${error.message}`, 'error');
+                    }
+                    return false;
+                }
+            }
+
+            // 方法2: Native Bridge 方案（与App交互）
+            useNativeBridge() {
+                this.showStatus('尝试通过Native Bridge调用系统分享...', 'info');
+
+                const shareData = {
+                    title: 'Native分享测试',
+                    content: '这是通过Native Bridge分享的内容',
+                    url: window.location.href,
+                    image: '' // 可以添加缩略图URL
+                };
+
+                // Android - 通过JavaScript Interface
+                if (this.browserInfo.isAndroid && window.AndroidBridge) {
+                    try {
+                        window.AndroidBridge.shareToSystem(JSON.stringify(shareData));
+                        this.showStatus('✅ 已调用Android Native分享', 'success');
+                        return true;
+                    } catch (e) {
+                        this.showStatus('❌ Android Native Bridge调用失败', 'error');
+                    }
+                }
+
+                // iOS - 通过WebKit消息处理
+                if (this.browserInfo.isIOS && window.webkit) {
+                    try {
+                        window.webkit.messageHandlers.shareHandler.postMessage(shareData);
+                        this.showStatus('✅ 已调用iOS Native分享', 'success');
+                        return true;
+                    } catch (e) {
+                        this.showStatus('❌ iOS Native Bridge调用失败', 'error');
+                    }
+                }
+
+                // 通用方案 - 尝试调用可能的Bridge
+                this.tryUniversalBridge(shareData);
+                return false;
+            }
+
+            // 方法3: 尝试通用Bridge方案
+            tryUniversalBridge(shareData) {
+                const bridges = [
+                    'jsBridge',
+                    'webkit',
+                    'AndroidBridge',
+                    'YixinJSBridge',
+                    '_ks_jsbridge',
+                    'QuarkJSBridge'
+                ];
+
+                for (const bridgeName of bridges) {
+                    if (window[bridgeName]) {
+                        this.showStatus(`🔍 检测到 ${bridgeName}，尝试调用...`, 'info');
+
+                        // 这里需要根据具体的Bridge文档来调用
+                        // 不同浏览器的Bridge API不同
+                        setTimeout(() => {
+                            this.showStatus(`⚠️ 需要根据 ${bridgeName} 的文档实现具体分享逻辑`, 'info');
+                        }, 1000);
+                        return;
+                    }
+                }
+
+                this.showStatus('❌ 未检测到可用的Native Bridge', 'error');
+                setTimeout(() => {
+                    this.showStatus('💡 建议：使用URL Scheme方案或自定义分享面板', 'info');
+                }, 1500);
+            }
+
+            // 方法4: URL Scheme 方案
+            useURLScheme() {
+                this.showStatus('尝试通过URL Scheme调用系统分享...', 'info');
+
+                const text = encodeURIComponent('分享内容：这是一个测试分享');
+                const url = encodeURIComponent(window.location.href);
+
+                let schemeUrl = '';
+
+                if (this.browserInfo.isIOS) {
+                    // iOS 系统分享Scheme
+                    schemeUrl = `shared://com.apple.social.share?text=${text}&url=${url}`;
+                } else if (this.browserInfo.isAndroid) {
+                    // Android Intent Scheme
+                    schemeUrl = `intent://share?text=${text}&url=${url}#Intent;package=com.android.chrome;scheme=https;end`;
+                }
+
+                if (schemeUrl) {
+                    this.showStatus('🔗 尝试打开系统分享...', 'info');
+                    window.location.href = schemeUrl;
+
+                    // 检测是否成功打开
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            this.showStatus('❌ URL Scheme调用失败，可能不被支持', 'error');
+                            this.fallbackToCustomShare();
+                        }
+                    }, 1000);
+                } else {
+                    this.showStatus('❌ 无法生成适合当前平台的URL Scheme', 'error');
+                    this.fallbackToCustomShare();
+                }
+            }
+
+            // 方法5: 降级到自定义分享面板
+            fallbackToCustomShare() {
+                this.showStatus('🔄 降级到自定义分享面板...', 'info');
+
+                // 创建自定义分享界面
+                const sharePanel = this.createCustomSharePanel();
+                document.body.appendChild(sharePanel);
+            }
+
+            createCustomSharePanel() {
+                const panel = document.createElement('div');
+                panel.innerHTML = `
+                    <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+                        <div style="position:absolute; bottom:0; left:0; width:100%; background:white; border-radius:20px 20px 0 0; padding:20px;">
+                            <h3>分享到</h3>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0;">
+                                <button onclick="shareToWechat()" style="padding:10px; border:none; background:#f0f0f0; border-radius:10px;">微信</button>
+                                <button onclick="shareToQQ()" style="padding:10px; border:none; background:#f0f0f0; border-radius:10px;">QQ</button>
+                                <button onclick="shareToWeibo()" style="padding:10px; border:none; background:#f0f0f0; border-radius:10px;">微博</button>
+                                <button onclick="copyLink()" style="padding:10px; border:none; background:#f0f0f0; border-radius:10px;">复制链接</button>
+                            </div>
+                            <button onclick="closeSharePanel()" style="width:100%; padding:15px; background:#ff3b30; color:white; border:none; border-radius:10px;">关闭</button>
+                        </div>
+                    </div>
+                `;
+                return panel;
+            }
+
+            // 方法6: 智能分享 - 尝试所有方法
+            async tryAllShareMethods() {
+                this.showStatus('🚀 开始智能分享，尝试所有可用方法...', 'info');
+
+                // 1. 首先尝试Web Share API
+                if (await this.testWebShare()) {
+                    return;
+                }
+
+                // 2. 尝试Native Bridge
+                setTimeout(() => {
+                    if (!this.useNativeBridge()) {
+                        // 3. 最后降级到自定义分享
+                        setTimeout(() => {
+                            this.fallbackToCustomShare();
+                        }, 1500);
+                    }
+                }, 1000);
+            }
+
+            showStatus(message, type) {
+                const statusEl = document.getElementById('status');
+                statusEl.textContent = message;
+                statusEl.className = `status ${type}`;
+            }
+        }
+
+        // 全局函数供HTML调用
+        const shareUtils = new AdvancedShareUtils();
+
+        function tryAllShareMethods() {
+            shareUtils.tryAllShareMethods();
+        }
+
+        function testWebShare() {
+            shareUtils.testWebShare();
+        }
+
+        function useNativeBridge() {
+            shareUtils.useNativeBridge();
+        }
+
+        function useURLScheme() {
+            shareUtils.useURLScheme();
+        }
+
+        function closeSharePanel() {
+            const panels = document.querySelectorAll('[style*="position:fixed"]');
+            panels.forEach(panel => panel.remove());
+        }
+
+        function shareToWechat() {
+            shareUtils.showStatus('💬 分享到微信（需要接入微信JS-SDK）', 'info');
+            closeSharePanel();
+        }
+
+        function shareToQQ() {
+            shareUtils.showStatus('🐧 分享到QQ（需要接入QQ SDK）', 'info');
+            closeSharePanel();
+        }
+
+        function shareToWeibo() {
+            const url = `http://service.weibo.com/share/share.php?title=${encodeURIComponent('分享标题')}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+            closeSharePanel();
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                shareUtils.showStatus('✅ 链接已复制到剪贴板', 'success');
+            }).catch(() => {
+                shareUtils.showStatus('❌ 复制失败，请手动复制', 'error');
+            });
+            closeSharePanel();
+        }
+
+        // 页面加载时检测环境
+        document.addEventListener('DOMContentLoaded', function () {
+            const info = shareUtils.browserInfo;
+            let envInfo = `检测到: `;
+
+            if (info.isQuark) envInfo += '夸克浏览器 ';
+            if (info.isWechat) envInfo += '微信 ';
+            if (info.isQQ) envInfo += 'QQ浏览器 ';
+            if (info.isUC) envInfo += 'UC浏览器 ';
+            if (info.isIOS) envInfo += 'iOS ';
+            if (info.isAndroid) envInfo += 'Android ';
+
+            shareUtils.showStatus(envInfo, 'info');
+        });
+    </script>
+</body>
+
+</html>

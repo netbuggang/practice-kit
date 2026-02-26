@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景4：广告统计 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .ad-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .ad-card.impressed {
+      border-color: #667eea;
+    }
+
+    .ad-image {
+      height: 150px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .ad-image:nth-child(2) {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .ad-image:nth-child(3) {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .ad-content {
+      padding: 1.5rem;
+    }
+
+    .ad-content h3 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .ad-content p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .ad-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: #e9eef4;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .stats-panel {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-top: 0.3rem;
+    }
+
+    .impression-tag {
+      background: #22c55e;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      margin-left: 0.5rem;
+    }
+
+    .reset-btn {
+      background: white;
+      color: #1e293b;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .reset-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .debug-info {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>📊 场景4：广告统计</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 广告曝光统计是广告计费的核心依据。通过 IntersectionObserver 精确统计广告位进入视口的次数、时长，避免重复计数，为广告主提供真实曝光数据。
+    </div>
+
+    <div class="stats-panel">
+      <div class="stat-item">
+        <div class="stat-value" id="totalImpression">0</div>
+        <div class="stat-label">总曝光次数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="uniqueImpression">0</div>
+        <div class="stat-label">独立广告曝光</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="clickCount">0</div>
+        <div class="stat-label">点击次数</div>
+      </div>
+      <div class="stat-item">
+        <button class="reset-btn" onclick="resetStats()">🔄 重置统计</button>
+      </div>
+    </div>
+
+    <div class="ad-grid" id="adGrid">
+      <!-- 广告卡片会通过JS动态生成 -->
+    </div>
+
+    <div
+      style="height: 400px; background: linear-gradient(to bottom, #f1f5f9, #ffffff); display: flex; align-items: center; justify-content: center; border-radius: 12px; margin: 2rem 0; flex-direction: column;">
+      <p style="margin-bottom: 1rem;">⬇️ 下方还有更多广告位</p>
+      <div style="display: flex; gap: 1rem;">
+        <span class="ad-badge">继续滚动查看曝光统计</span>
+        <span class="ad-badge">每个广告只计一次独立曝光</span>
+      </div>
+    </div>
+
+    <div class="ad-grid" id="adGrid2"></div>
+
+    <div class="debug-info">
+      <strong>🔍 调试信息</strong>
+      <div id="ad-waiting">等待曝光...</div>
+      <div id="debugLog"></div>
+    </div>
+  </div>
+
+  <script>
+    // 广告数据
+    const ads = [
+      { id: 1, title: '夏季大促', desc: '全场5折起', image: '🛍️', category: '电商' },
+      { id: 2, title: '新品首发', desc: '限时特惠', image: '📱', category: '数码' },
+      { id: 3, title: '旅游季', desc: '机票酒店折扣', image: '✈️', category: '旅游' },
+      { id: 4, title: '美食推荐', desc: '附近热门餐厅', image: '🍜', category: '餐饮' },
+      { id: 5, title: '健身课程', desc: '免费体验', image: '💪', category: '健身' },
+      { id: 6, title: '知识付费', desc: '限时优惠', image: '📚', category: '教育' }
+    ];
+
+    const ads2 = [
+      { id: 7, title: '汽车养护', desc: '保养套餐', image: '🚗', category: '汽车' },
+      { id: 8, title: '家居好物', desc: '品质生活', image: '🏠', category: '家居' },
+      { id: 9, title: '美妆护肤', desc: '新品体验', image: '💄', category: '美妆' }
+    ];
+
+    // 状态管理
+    const impressionState = new Map(); // 记录每个广告是否已曝光
+    let totalImpression = 0;
+    let clickCount = 0;
+
+    // 渲染广告网格
+    function renderAds() {
+      const grid1 = document.getElementById('adGrid');
+      grid1.innerHTML = ads.map(ad => `
+                <div class="ad-card" data-ad-id="${ad.id}" onclick="handleAdClick(${ad.id})">
+                    <div class="ad-image">${ad.image}</div>
+                    <div class="ad-content">
+                        <h3>${ad.title} <span class="ad-badge">${ad.category}</span></h3>
+                        <p>${ad.desc}</p>
+                        <span class="impression-tag" id="impression-${ad.id}" style="display: none;">已曝光</span>
+                    </div>
+                </div>
+            `).join('');
+
+      const grid2 = document.getElementById('adGrid2');
+      grid2.innerHTML = ads2.map(ad => `
+                <div class="ad-card" data-ad-id="${ad.id}" onclick="handleAdClick(${ad.id})">
+                    <div class="ad-image">${ad.image}</div>
+                    <div class="ad-content">
+                        <h3>${ad.title} <span class="ad-badge">${ad.category}</span></h3>
+                        <p>${ad.desc}</p>
+                        <span class="impression-tag" id="impression-${ad.id}" style="display: none;">已曝光</span>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // 处理广告点击
+    window.handleAdClick = (adId) => {
+      clickCount++;
+      updateStats();
+
+      // 高亮被点击的广告
+      const ad = document.querySelector(`[data-ad-id="${adId}"]`);
+      ad.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        ad.style.transform = '';
+      }, 200);
+
+      log(`广告 ${adId} 被点击`);
+    };
+
+    // 处理广告曝光
+    function handleAdImpression(adId) {
+      if (!impressionState.has(adId)) {
+        impressionState.set(adId, true);
+        totalImpression++;
+
+        // 显示曝光标签
+        const tag = document.getElementById(`impression-${adId}`);
+        if (tag) {
+          tag.style.display = 'inline-block';
+        }
+
+        // 高亮卡片
+        const card = document.querySelector(`[data-ad-id="${adId}"]`);
+        card.classList.add('impressed');
+
+        updateStats();
+        log(`广告 ${adId} 首次曝光`);
+      }
+    }
+
+    // 更新统计面板
+    function updateStats() {
+      document.getElementById('totalImpression').textContent = totalImpression;
+      document.getElementById('uniqueImpression').textContent = impressionState.size;
+      document.getElementById('clickCount').textContent = clickCount;
+    }
+
+    // 重置统计
+    window.resetStats = () => {
+      impressionState.clear();
+      totalImpression = 0;
+      clickCount = 0;
+
+      // 重置所有广告状态
+      document.querySelectorAll('.ad-card').forEach(card => {
+        card.classList.remove('impressed');
+      });
+      document.querySelectorAll('.impression-tag').forEach(tag => {
+        tag.style.display = 'none';
+      });
+
+      updateStats();
+      log('统计已重置');
+    };
+
+    // 调试日志
+    function log(message) {
+      // 如果有日志进来，隐藏等待曝光提示
+      const waiting = document.getElementById('ad-waiting');
+      if (message.length) {
+        waiting.style.display = 'none';
+      }
+      const debugLog = document.getElementById('debugLog');
+      const time = new Date().toLocaleTimeString();
+      debugLog.innerHTML = `[${time}] ${message}<br>` + debugLog.innerHTML;
+
+      // 限制日志条数
+      const lines = debugLog.innerHTML.split('<br>');
+      if (lines.length > 99) {
+        debugLog.innerHTML = lines.slice(0, 99).join('<br>');
+      }
+    }
+
+    // IntersectionObserver 实现广告曝光统计
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const adId = entry.target.dataset.adId;
+          handleAdImpression(adId);
+        }
+      });
+    }, {
+      threshold: 0.5, // 50% 面积可见才算曝光
+      rootMargin: '0px'
+    });
+
+    // 观察所有广告卡片
+    function observeAds() {
+      document.querySelectorAll('.ad-card').forEach(ad => {
+        observer.observe(ad);
+      });
+    }
+
+    // 初始化
+    renderAds();
+    observeAds();
+    updateStats();
+
+    // 监听动态添加的广告（模拟懒加载）
+    setTimeout(() => {
+      log('新广告位加载完成');
+      observeAds();
+    }, 1000);
+  </script>
+</body>
+
+</html>

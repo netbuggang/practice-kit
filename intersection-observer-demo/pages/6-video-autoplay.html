@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景6：视频自动播放 | IntersectionObserver</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .video-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      margin: 2rem 0;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .video-card.playing {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .video-container {
+      position: relative;
+      background: #000;
+      aspect-ratio: 16/9;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #1a1a1a;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .play-indicator {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(102, 126, 234, 0.9);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      backdrop-filter: blur(5px);
+      transition: opacity 0.3s;
+    }
+
+    .play-indicator.playing {
+      background: #22c55e;
+    }
+
+    .video-info {
+      padding: 1.5rem;
+    }
+
+    .video-info h3 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .video-info p {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .video-meta {
+      display: flex;
+      gap: 1rem;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .video-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .control-panel {
+      position: sticky;
+      top: 20px;
+      z-index: 9;
+      background: #f1f5f9;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .toggle-btn {
+      background: white;
+      border: 2px solid #e2e8f0;
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .toggle-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .toggle-btn:hover {
+      border-color: #667eea;
+    }
+
+    .status-badge {
+      background: #22c55e;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+
+    .threshold-slider {
+      flex: 1;
+      min-width: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <a href="../index.html" class="back-link">← 返回主页</a>
+    <h1>▶️ 场景6：视频自动播放</h1>
+    <div style="width: 80px;"></div>
+  </div>
+
+  <div class="demo-container">
+    <div class="explain">
+      <strong>💡 原理：</strong> 通过 IntersectionObserver 监测视频元素与视口的交叉比例，
+      当视频进入视口（达到设定阈值）时自动播放，离开时自动暂停。提升用户体验，节省带宽。
+    </div>
+
+    <div class="control-panel">
+      <div>
+        <span style="font-weight: 500;">自动播放阈值: </span>
+        <span id="thresholdValue">0.5</span>
+      </div>
+      <input type="range" id="thresholdSlider" class="threshold-slider" min="0" max="1" step="0.1" value="0.5">
+      <button class="toggle-btn active" id="muteToggle">🔇 静音</button>
+      <button class="toggle-btn" id="loopToggle">🔄 循环播放</button>
+      <span class="status-badge" id="playingCount">0 个视频正在播放</span>
+    </div>
+
+    <div class="video-gallery" id="videoGallery">
+      <!-- 视频卡片会通过JS动态生成 -->
+    </div>
+
+    <div
+      style="height: 300px; background: linear-gradient(to bottom, #f1f5f9, #ffffff); border-radius: 12px; margin: 2rem 0; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <p style="margin-bottom: 1rem;">⬇️ 下方还有更多视频</p>
+      <div style="display: flex; gap: 0.5rem;">
+        <span class="video-meta">继续滚动查看更多视频</span>
+      </div>
+    </div>
+
+    <div class="video-gallery" id="videoGallery2"></div>
+  </div>
+
+  <script>
+    // 视频数据
+    const videos = [
+      {
+        id: 1,
+        title: '自然风光 - 森林小溪',
+        desc: '4K 超清自然风光，沉浸式体验森林的声音',
+        duration: '0:30',
+        size: '45 MB',
+        src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        poster: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400'
+      },
+      {
+        id: 2,
+        title: '海洋世界 - 珊瑚礁',
+        desc: '探索神秘的海底世界，色彩斑斓的珊瑚礁',
+        duration: '0:45',
+        size: '68 MB',
+        src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+        poster: 'https://images.unsplash.com/photo-1582967788606-a171d1080cb0?w=400'
+      },
+      {
+        id: 3,
+        title: '城市延时 - 夜景',
+        desc: '城市车水马龙，璀璨夜景延时摄影',
+        duration: '0:25',
+        size: '38 MB',
+        src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        poster: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400'
+      }
+    ];
+
+    const videos2 = [
+      {
+        id: 4,
+        title: '动物世界 - 野生动物',
+        desc: '非洲大草原的野生动物纪录片片段',
+        duration: '0:50',
+        size: '75 MB',
+        src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        poster: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400'
+      },
+      {
+        id: 5,
+        title: '科技产品 - 概念视频',
+        desc: '未来科技产品概念展示',
+        duration: '0:35',
+        size: '52 MB',
+        src: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+        poster: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400'
+      }
+    ];
+
+    let isMuted = true;
+    let isLoop = false;
+    let threshold = 0.5;
+    const videoElements = new Map(); // 存储视频元素
+    const observers = new Map(); // 存储每个视频的观察器
+
+    // 渲染视频卡片
+    function renderVideo(video, containerId) {
+      const container = document.getElementById(containerId);
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.id = `video-card-${video.id}`;
+
+      card.innerHTML = `
+                <div class="video-container">
+                    <video 
+                        id="video-${video.id}"
+                        preload="metadata"
+                        poster="${video.poster}"
+                        muted="${isMuted}"
+                        loop="${isLoop}"
+                        playsinline
+                    >
+                        <source src="${video.src}" type="video/mp4">
+                    </video>
+                    <div class="video-overlay">📹 ${video.title}</div>
+                    <div class="play-indicator" id="indicator-${video.id}">⏸️ 暂停</div>
+                </div>
+                <div class="video-info">
+                    <h3>${video.title}</h3>
+                    <p>${video.desc}</p>
+                    <div class="video-meta">
+                        <span>⏱️ ${video.duration}</span>
+                        <span>💾 ${video.size}</span>
+                        <span>🎬 4K</span>
+                    </div>
+                </div>
+            `;
+
+      container.appendChild(card);
+
+      // 获取视频元素
+      const videoEl = document.getElementById(`video-${video.id}`);
+      videoElements.set(video.id, videoEl);
+
+      // 设置视频属性
+      videoEl.muted = isMuted;
+      videoEl.loop = isLoop;
+
+      // 监听视频事件
+      videoEl.addEventListener('play', () => {
+        const indicator = document.getElementById(`indicator-${video.id}`);
+        indicator.textContent = '▶️ 播放中';
+        indicator.classList.add('playing');
+        document.getElementById(`video-card-${video.id}`).classList.add('playing');
+        updatePlayingCount();
+      });
+
+      videoEl.addEventListener('pause', () => {
+        const indicator = document.getElementById(`indicator-${video.id}`);
+        indicator.textContent = '⏸️ 暂停';
+        indicator.classList.remove('playing');
+        document.getElementById(`video-card-${video.id}`).classList.remove('playing');
+        updatePlayingCount();
+      });
+
+      return videoEl;
+    }
+
+    // 创建观察器
+    function createObserver(videoEl, videoId) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // 进入视口，自动播放
+            videoEl.play().catch(e => console.log('自动播放失败:', e));
+          } else {
+            // 离开视口，暂停
+            videoEl.pause();
+          }
+        });
+      }, {
+        threshold: threshold,
+        rootMargin: '0px'
+      });
+
+      observers.set(videoId, observer);
+      observer.observe(videoEl);
+    }
+
+    // 更新播放计数
+    function updatePlayingCount() {
+      let count = 0;
+      videoElements.forEach(video => {
+        if (!video.paused) count++;
+      });
+      document.getElementById('playingCount').textContent = `${count} 个视频正在播放`;
+    }
+
+    // 初始化所有视频
+    function initVideos() {
+      // 清空容器
+      document.getElementById('videoGallery').innerHTML = '';
+      document.getElementById('videoGallery2').innerHTML = '';
+
+      // 销毁所有观察器
+      observers.forEach(observer => observer.disconnect());
+      observers.clear();
+      videoElements.clear();
+
+      // 重新渲染
+      videos.forEach(video => renderVideo(video, 'videoGallery'));
+      videos2.forEach(video => renderVideo(video, 'videoGallery2'));
+
+      // 为每个视频创建观察器
+      videoElements.forEach((videoEl, videoId) => {
+        createObserver(videoEl, videoId);
+      });
+    }
+
+    // 控制面板事件
+    document.getElementById('thresholdSlider').addEventListener('input', (e) => {
+      threshold = parseFloat(e.target.value);
+      document.getElementById('thresholdValue').textContent = threshold;
+
+      // 重新创建所有观察器
+      observers.forEach((observer, videoId) => {
+        observer.disconnect();
+        const videoEl = videoElements.get(videoId);
+        if (videoEl) {
+          createObserver(videoEl, videoId);
+        }
+      });
+    });
+
+    document.getElementById('muteToggle').addEventListener('click', (e) => {
+      isMuted = !isMuted;
+      e.target.classList.toggle('active');
+      e.target.textContent = isMuted ? '🔇 静音' : '🔊 取消静音';
+
+      videoElements.forEach(video => {
+        video.muted = isMuted;
+      });
+    });
+
+    document.getElementById('loopToggle').addEventListener('click', (e) => {
+      isLoop = !isLoop;
+      e.target.classList.toggle('active');
+      e.target.textContent = isLoop ? '🔄 循环开启' : '🔄 循环关闭';
+
+      videoElements.forEach(video => {
+        video.loop = isLoop;
+      });
+    });
+
+    // 初始化
+    initVideos();
+
+    // 页面可见性变化时处理
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // 页面隐藏时暂停所有视频
+        videoElements.forEach(video => video.pause());
+      }
+    });
+  </script>
+</body>
+
+</html>
