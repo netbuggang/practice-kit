@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Debugging</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #5a67d8;
+        }
+        button {
+            background-color: #5a67d8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #434190;
+            transform: scale(1.05);
+        }
+        button:active {
+            background-color: #3c366b;
+        }
+        .input-container {
+            display: flex;
+            width: 100%;
+        }
+        #textInput {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        .container {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript WebSocket Demo</h1>
+    <div class="container">
+        <button id="button-start">StartSynthesis</button>
+        <button id="button-run">RunSynthesis</button>
+        <button id="button-stop">StopSynthesis</button>
+        <div class="input-container">
+            <input type="text" id="textInput" placeholder="请输入需要合成的文本或文本片段。">
+        </div>
+    </div>
+    <!-- 引用外部JavaScript文件 -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
