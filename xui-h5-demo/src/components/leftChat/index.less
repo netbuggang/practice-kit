@@ -1,0 +1,73 @@
+@import url('../../global/global.less');
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.chatTextLeft {
+    margin: 10px 0;
+    display: flex;
+    text-align: left;
+    align-items: flex-start;
+
+    .topTime {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        margin-left: 10px;
+        color: @titleColor;
+
+        img {
+            width: 32px;
+            height: 32px;
+        }
+    }
+}
+
+.leftChatItemText {
+    font-size: 13px;
+    line-height: 20px;
+
+    & p {
+        margin: 0;
+    }
+
+    & ul {
+        flex-direction: column !important;
+    }
+
+    & pre {
+        overflow: auto;
+    }
+}
+
+.leftBody {
+    width: 100%;
+}
+
+.leftContent {
+    background: rgba(255, 255, 255);
+    border-radius: 4px 12px 12px 12px;
+    // max-width: @cardWidth;
+    width: 80%;
+    margin: 0px 12px;
+    padding: 10px;
+    color: rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    word-wrap: break-word;
+    border: 1px solid rgba(0, 10, 26, 0.1);
+    text-align: left;
+    display: inline-block;
+
+    table {
+        border-collapse: collapse;
+        /* 合并边框 */
+    }
+    table,
+    th,
+    td {
+        border: 1px solid #000;
+        /* 1像素粗的黑色实线边框 */
+    }
+}

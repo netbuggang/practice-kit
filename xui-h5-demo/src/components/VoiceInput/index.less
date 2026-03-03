@@ -1,0 +1,100 @@
+.voiceInputWrap {
+  position: relative;
+  width: 100%;
+  touch-action: none;
+
+  .voiceInput {
+    position: relative;
+    width: 100%;
+    height: 49px;
+    padding: 2px;
+    border-radius: 16px;
+    background-color: #E6ECF4;
+    overflow: hidden;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    z-index: 3001;
+
+    .inputField {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background-color: #fff;
+      user-select: none;
+    }
+  }
+
+  .transcribeWrap {
+
+    .transcribeContent {
+      position: absolute;
+      bottom: 66px;
+      right: 0;
+      left: 0;
+      padding: 20px;
+      border-radius: 16px;
+      background: #FFFFFF;
+      background: linear-gradient(180deg, rgba(254, 81, 82, 0) 76%, rgba(254, 81, 82, 0.08) 100%), #FFFFFF;
+      border: 1px solid #FFFFFF;
+      box-shadow: 0px 1px 3px 0px rgba(25, 33, 61, 0.1);
+      z-index: 3001;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        left: 0;
+        height: 45px;
+        z-index: -1;
+        background: url('https://mdn.alipayobjects.com/huamei_ptjqan/afts/img/A*9adeRKwfQrEAAAAAAAAAAAAADkN6AQ/original.png') 0 0/100% no-repeat;
+      }
+
+      .loading {
+        height: 150px;
+        line-height: 150px;
+        text-align: center;
+        font-size: 14px;
+        color: #999;
+      }
+
+      .text {
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.5;
+        color: #333333;
+      }
+
+      .img {
+        padding: 20px 30px 0;
+
+        img {
+          width: 100%;
+        }
+      }
+
+      .desc {
+        text-align: center;
+        padding: 10px 16px 0;
+        font-size: 12px;
+        line-height: 22px;
+        color: #B9C0CB;
+      }
+    }
+
+    .transcribeMask {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      height: 100%;
+      left: 0;
+      opacity: 1;
+      background-color: rgba(4, 15, 36, .25);
+      z-index: 3000;
+    }
+  }
+}

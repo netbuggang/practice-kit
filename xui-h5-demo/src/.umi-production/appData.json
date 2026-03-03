@@ -1,0 +1,2150 @@
+{
+  "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+  "pkg": {
+    "name": "mpaas-xui-h5-demo",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "dev": "umi dev",
+      "build": "umi build",
+      "postinstall": "umi setup",
+      "setup": "umi setup",
+      "start": "npm run dev",
+      "static": "rm -rf ./distCopy && onex-assets localize ./dist ./distCopy -p /proxy/assets/massistant/xuiweb/"
+    },
+    "dependencies": {
+      "@microsoft/fetch-event-source": "^2.0.1",
+      "@use-gesture/react": "^10.3.1",
+      "antd": "^5.16.2",
+      "antd-mobile": "^5.37.1",
+      "axios": "^1.10.0",
+      "highlight.js": "^11.11.1",
+      "markdown-it": "^14.1.0",
+      "moment": "^2.30.1",
+      "postcss-px-to-viewport": "^1.1.1",
+      "umi": "^4.1.9",
+      "vconsole": "^3.15.1"
+    },
+    "devDependencies": {
+      "@types/react": "^18.0.33",
+      "@types/react-dom": "^18.0.11",
+      "typescript": "^5.0.3"
+    },
+    "__npminstall_done": false,
+    "repository": "https://code.alipay.com/mPaaS-Resources/mpaas-bot-poc.git"
+  },
+  "pkgPath": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/package.json",
+  "plugins": {
+    "./node_modules/@umijs/core/dist/service/servicePlugin": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "register",
+      "type": "preset",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/core/dist/service/servicePlugin.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/core/dist/service/servicePlugin",
+      "key": "servicePlugin"
+    },
+    "@umijs/preset-umi": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 7
+      },
+      "enableBy": "register",
+      "type": "preset",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/index.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "@umijs/preset-umi",
+      "key": "umi"
+    },
+    "./node_modules/@umijs/preset-umi/dist/registerMethods": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "onStart": [
+            0
+          ]
+        },
+        "register": 4
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/registerMethods.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/registerMethods",
+      "key": "registerMethods"
+    },
+    "@umijs/did-you-know": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "onStart": [
+            3
+          ]
+        },
+        "register": 2
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/did-you-know/dist/plugin.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "@umijs/did-you-know",
+      "key": "umijsDidYouKnow"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/404/404": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "modifyRoutes": [
+            0
+          ]
+        },
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/404/404.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/404/404",
+      "key": "404"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/aiDev/aiDev": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/aiDev/aiDev.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/aiDev/aiDev",
+      "key": "aiDev"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/appData/appData": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "modifyAppData": [
+            6
+          ]
+        },
+        "register": 30
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/appData/appData.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/appData/appData",
+      "key": "appData"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/appData/umiInfo": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/appData/umiInfo.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/appData/umiInfo",
+      "key": "umiInfo"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/check/check": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "onCheckConfig": [
+            0
+          ],
+          "onCheck": [
+            0
+          ]
+        },
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/check/check.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/check/check",
+      "key": "check"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/check/babel722": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "onCheck": [
+            0
+          ]
+        },
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/check/babel722.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/check/babel722",
+      "key": "babel722"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/codeSplitting/codeSplitting": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/codeSplitting/codeSplitting.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/codeSplitting/codeSplitting",
+      "key": "codeSplitting"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/configPlugins/configPlugins": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "modifyConfig": [
+            0
+          ]
+        },
+        "register": 10
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/configPlugins/configPlugins.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/configPlugins/configPlugins",
+      "key": "configPlugins"
+    },
+    "virtual: config-title": {
+      "id": "virtual: config-title",
+      "key": "title",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-styles": {
+      "id": "virtual: config-styles",
+      "key": "styles",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-scripts": {
+      "id": "virtual: config-scripts",
+      "key": "scripts",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-routes": {
+      "id": "virtual: config-routes",
+      "key": "routes",
+      "config": {
+        "onChange": "regenerateTmpFiles"
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-routeLoader": {
+      "id": "virtual: config-routeLoader",
+      "key": "routeLoader",
+      "config": {
+        "default": {
+          "moduleType": "esm"
+        }
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-reactRouter5Compat": {
+      "id": "virtual: config-reactRouter5Compat",
+      "key": "reactRouter5Compat",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-presets": {
+      "id": "virtual: config-presets",
+      "key": "presets",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-plugins": {
+      "id": "virtual: config-plugins",
+      "key": "plugins",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-npmClient": {
+      "id": "virtual: config-npmClient",
+      "key": "npmClient",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-mountElementId": {
+      "id": "virtual: config-mountElementId",
+      "key": "mountElementId",
+      "config": {
+        "default": "root"
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-metas": {
+      "id": "virtual: config-metas",
+      "key": "metas",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-links": {
+      "id": "virtual: config-links",
+      "key": "links",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-historyWithQuery": {
+      "id": "virtual: config-historyWithQuery",
+      "key": "historyWithQuery",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-history": {
+      "id": "virtual: config-history",
+      "key": "history",
+      "config": {
+        "default": {
+          "type": "browser"
+        }
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-headScripts": {
+      "id": "virtual: config-headScripts",
+      "key": "headScripts",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-esbuildMinifyIIFE": {
+      "id": "virtual: config-esbuildMinifyIIFE",
+      "key": "esbuildMinifyIIFE",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-conventionRoutes": {
+      "id": "virtual: config-conventionRoutes",
+      "key": "conventionRoutes",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-conventionLayout": {
+      "id": "virtual: config-conventionLayout",
+      "key": "conventionLayout",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-base": {
+      "id": "virtual: config-base",
+      "key": "base",
+      "config": {
+        "default": "/"
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-analyze": {
+      "id": "virtual: config-analyze",
+      "key": "analyze",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-writeToDisk": {
+      "id": "virtual: config-writeToDisk",
+      "key": "writeToDisk",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-transformRuntime": {
+      "id": "virtual: config-transformRuntime",
+      "key": "transformRuntime",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-theme": {
+      "id": "virtual: config-theme",
+      "key": "theme",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-targets": {
+      "id": "virtual: config-targets",
+      "key": "targets",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-svgr": {
+      "id": "virtual: config-svgr",
+      "key": "svgr",
+      "config": {
+        "default": {}
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-svgo": {
+      "id": "virtual: config-svgo",
+      "key": "svgo",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-stylusLoader": {
+      "id": "virtual: config-stylusLoader",
+      "key": "stylusLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-styleLoader": {
+      "id": "virtual: config-styleLoader",
+      "key": "styleLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-srcTranspilerOptions": {
+      "id": "virtual: config-srcTranspilerOptions",
+      "key": "srcTranspilerOptions",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-srcTranspiler": {
+      "id": "virtual: config-srcTranspiler",
+      "key": "srcTranspiler",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-sassLoader": {
+      "id": "virtual: config-sassLoader",
+      "key": "sassLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-runtimePublicPath": {
+      "id": "virtual: config-runtimePublicPath",
+      "key": "runtimePublicPath",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-purgeCSS": {
+      "id": "virtual: config-purgeCSS",
+      "key": "purgeCSS",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-publicPath": {
+      "id": "virtual: config-publicPath",
+      "key": "publicPath",
+      "config": {
+        "default": "/"
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-proxy": {
+      "id": "virtual: config-proxy",
+      "key": "proxy",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-postcssLoader": {
+      "id": "virtual: config-postcssLoader",
+      "key": "postcssLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-outputPath": {
+      "id": "virtual: config-outputPath",
+      "key": "outputPath",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-normalCSSLoaderModules": {
+      "id": "virtual: config-normalCSSLoaderModules",
+      "key": "normalCSSLoaderModules",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-mfsu": {
+      "id": "virtual: config-mfsu",
+      "key": "mfsu",
+      "config": {
+        "default": {
+          "strategy": "eager"
+        }
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-mdx": {
+      "id": "virtual: config-mdx",
+      "key": "mdx",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-manifest": {
+      "id": "virtual: config-manifest",
+      "key": "manifest",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-lessLoader": {
+      "id": "virtual: config-lessLoader",
+      "key": "lessLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-jsMinifierOptions": {
+      "id": "virtual: config-jsMinifierOptions",
+      "key": "jsMinifierOptions",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-jsMinifier": {
+      "id": "virtual: config-jsMinifier",
+      "key": "jsMinifier",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-inlineLimit": {
+      "id": "virtual: config-inlineLimit",
+      "key": "inlineLimit",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-ignoreMomentLocale": {
+      "id": "virtual: config-ignoreMomentLocale",
+      "key": "ignoreMomentLocale",
+      "config": {
+        "default": true
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-https": {
+      "id": "virtual: config-https",
+      "key": "https",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-hash": {
+      "id": "virtual: config-hash",
+      "key": "hash",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-forkTSChecker": {
+      "id": "virtual: config-forkTSChecker",
+      "key": "forkTSChecker",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-fastRefresh": {
+      "id": "virtual: config-fastRefresh",
+      "key": "fastRefresh",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-extraPostCSSPlugins": {
+      "id": "virtual: config-extraPostCSSPlugins",
+      "key": "extraPostCSSPlugins",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-extraBabelPresets": {
+      "id": "virtual: config-extraBabelPresets",
+      "key": "extraBabelPresets",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-extraBabelPlugins": {
+      "id": "virtual: config-extraBabelPlugins",
+      "key": "extraBabelPlugins",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-extraBabelIncludes": {
+      "id": "virtual: config-extraBabelIncludes",
+      "key": "extraBabelIncludes",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-externals": {
+      "id": "virtual: config-externals",
+      "key": "externals",
+      "config": {
+        "default": {}
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-esm": {
+      "id": "virtual: config-esm",
+      "key": "esm",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-devtool": {
+      "id": "virtual: config-devtool",
+      "key": "devtool",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-depTranspiler": {
+      "id": "virtual: config-depTranspiler",
+      "key": "depTranspiler",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-define": {
+      "id": "virtual: config-define",
+      "key": "define",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-deadCode": {
+      "id": "virtual: config-deadCode",
+      "key": "deadCode",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cssPublicPath": {
+      "id": "virtual: config-cssPublicPath",
+      "key": "cssPublicPath",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cssMinifierOptions": {
+      "id": "virtual: config-cssMinifierOptions",
+      "key": "cssMinifierOptions",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cssMinifier": {
+      "id": "virtual: config-cssMinifier",
+      "key": "cssMinifier",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cssLoaderModules": {
+      "id": "virtual: config-cssLoaderModules",
+      "key": "cssLoaderModules",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cssLoader": {
+      "id": "virtual: config-cssLoader",
+      "key": "cssLoader",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-copy": {
+      "id": "virtual: config-copy",
+      "key": "copy",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-checkDepCssModules": {
+      "id": "virtual: config-checkDepCssModules",
+      "key": "checkDepCssModules",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-chainWebpack": {
+      "id": "virtual: config-chainWebpack",
+      "key": "chainWebpack",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-cacheDirectoryPath": {
+      "id": "virtual: config-cacheDirectoryPath",
+      "key": "cacheDirectoryPath",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-babelLoaderCustomize": {
+      "id": "virtual: config-babelLoaderCustomize",
+      "key": "babelLoaderCustomize",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-autoprefixer": {
+      "id": "virtual: config-autoprefixer",
+      "key": "autoprefixer",
+      "config": {},
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-autoCSSModules": {
+      "id": "virtual: config-autoCSSModules",
+      "key": "autoCSSModules",
+      "config": {
+        "default": true
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "virtual: config-alias": {
+      "id": "virtual: config-alias",
+      "key": "alias",
+      "config": {
+        "default": {
+          "umi": "@@/exports",
+          "react": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react",
+          "react-dom": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-dom",
+          "react-router": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-router",
+          "react-router-dom": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-router-dom"
+        }
+      },
+      "type": "plugin",
+      "enableBy": "register",
+      "time": {
+        "hooks": {},
+        "register": 0
+      }
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/crossorigin/crossorigin": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/crossorigin/crossorigin.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/crossorigin/crossorigin",
+      "key": "crossorigin"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/depsOnDemand/depsOnDemand": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "onStart": [
+            0
+          ]
+        },
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/depsOnDemand/depsOnDemand.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/depsOnDemand/depsOnDemand",
+      "key": "depsOnDemand"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/devTool/devTool": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/devTool/devTool.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/devTool/devTool",
+      "key": "devTool"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/esbuildHelperChecker/esbuildHelperChecker": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 55
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/esbuildHelperChecker/esbuildHelperChecker.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/esbuildHelperChecker/esbuildHelperChecker",
+      "key": "esbuildHelperChecker"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/esmi/esmi": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 45
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/esmi/esmi.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/esmi/esmi",
+      "key": "esmi"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/exportStatic/exportStatic": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 16
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/exportStatic/exportStatic.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/exportStatic/exportStatic",
+      "key": "exportStatic"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/favicons/favicons": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "modifyAppData": [
+            0
+          ]
+        },
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/favicons/favicons.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/favicons/favicons",
+      "key": "favicons"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/helmet/helmet": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/helmet/helmet.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/helmet/helmet",
+      "key": "helmet"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/icons/icons": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/icons/icons.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/icons/icons",
+      "key": "icons"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/mock/mock": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 33
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/mock/mock.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/mock/mock",
+      "key": "mock"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/mpa/mpa": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/mpa/mpa.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/mpa/mpa",
+      "key": "mpa"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/okam/okam": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/okam/okam.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/okam/okam",
+      "key": "okam"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/overrides/overrides": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/overrides/overrides.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/overrides/overrides",
+      "key": "overrides"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/phantomDependency/phantomDependency": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/phantomDependency/phantomDependency.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/phantomDependency/phantomDependency",
+      "key": "phantomDependency"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/polyfill/polyfill": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "modifyConfig": [
+            0
+          ]
+        },
+        "register": 4
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/polyfill/polyfill.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/polyfill/polyfill",
+      "key": "polyfill"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/polyfill/publicPathPolyfill": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 7
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/polyfill/publicPathPolyfill.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/polyfill/publicPathPolyfill",
+      "key": "publicPathPolyfill"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/prepare/prepare": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 4
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/prepare/prepare.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/prepare/prepare",
+      "key": "prepare"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/routePrefetch/routePrefetch": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/routePrefetch/routePrefetch.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/routePrefetch/routePrefetch",
+      "key": "routePrefetch"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/stagewise/stagewise": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/stagewise/stagewise.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/stagewise/stagewise",
+      "key": "stagewise"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/terminal/terminal": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/terminal/terminal.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/terminal/terminal",
+      "key": "terminal"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/tmpFiles/tmpFiles": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 5
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/tmpFiles/tmpFiles.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/tmpFiles/tmpFiles",
+      "key": "tmpFiles"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/clientLoader/clientLoader": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/clientLoader/clientLoader.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/clientLoader/clientLoader",
+      "key": "clientLoader"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/routeProps/routeProps": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/routeProps/routeProps.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/routeProps/routeProps",
+      "key": "routeProps"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/ssr/ssr": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 3
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/ssr/ssr.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/ssr/ssr",
+      "key": "ssr"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/tmpFiles/configTypes": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/tmpFiles/configTypes.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/tmpFiles/configTypes",
+      "key": "configTypes"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/transform/transform": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/transform/transform.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/transform/transform",
+      "key": "transform"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/lowImport/lowImport": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 4
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/lowImport/lowImport.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/lowImport/lowImport",
+      "key": "lowImport"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/vite/vite": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/vite/vite.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/vite/vite",
+      "key": "vite"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/apiRoute/apiRoute": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 5
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/apiRoute/apiRoute.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/apiRoute/apiRoute",
+      "key": "apiRoute"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/monorepo/redirect": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 16
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/monorepo/redirect.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/monorepo/redirect",
+      "key": "monorepoRedirect"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/test/test": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/test/test.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/test/test",
+      "key": "test"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/clickToComponent/clickToComponent": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/clickToComponent/clickToComponent.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/clickToComponent/clickToComponent",
+      "key": "clickToComponent"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/legacy/legacy": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/legacy/legacy.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/legacy/legacy",
+      "key": "legacy"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/classPropertiesLoose/classPropertiesLoose": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/classPropertiesLoose/classPropertiesLoose.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/classPropertiesLoose/classPropertiesLoose",
+      "key": "classPropertiesLoose"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/webpack/webpack": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/webpack/webpack.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/webpack/webpack",
+      "key": "preset-umi:webpack"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/swc/swc": {
+      "config": {},
+      "time": {
+        "hooks": {
+          "addOnDemandDeps": [
+            0
+          ]
+        },
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/swc/swc.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/swc/swc",
+      "key": "swc"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/ui/ui": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 4
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/ui/ui.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/ui/ui",
+      "key": "ui"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/mako/mako": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/mako/mako.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/mako/mako",
+      "key": "mako"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/utoopack/utoopack": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/utoopack/utoopack.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/utoopack/utoopack",
+      "key": "utoopack"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/hmrGuardian/hmrGuardian": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/hmrGuardian/hmrGuardian.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/hmrGuardian/hmrGuardian",
+      "key": "hmrGuardian"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/routePreloadOnLoad/routePreloadOnLoad": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 20
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/routePreloadOnLoad/routePreloadOnLoad.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/routePreloadOnLoad/routePreloadOnLoad",
+      "key": "routePreloadOnLoad"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/forget/forget": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "config",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/forget/forget.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/forget/forget",
+      "key": "forget"
+    },
+    "./node_modules/@umijs/preset-umi/dist/features/bundler/bundler": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/features/bundler/bundler.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/features/bundler/bundler",
+      "key": "preset-umi:bundler"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/build": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 3
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/build.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/build",
+      "key": "build"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/config/config": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 27
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/config/config.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/config/config",
+      "key": "config"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/dev/dev": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 36
+      },
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/dev/dev.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/dev/dev",
+      "key": "dev"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/help": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/help.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/help",
+      "key": "help"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/lint": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/lint.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/lint",
+      "key": "lint"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/setup": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/setup.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/setup",
+      "key": "setup"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/deadcode": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/deadcode.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/deadcode",
+      "key": "deadcode"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/version": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/version.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/version",
+      "key": "version"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/page": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/page.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/page",
+      "key": "generator:page"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/prettier": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/prettier.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/prettier",
+      "key": "generator:prettier"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/tsconfig": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/tsconfig.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/tsconfig",
+      "key": "generator:tsconfig"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/jest": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/jest.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/jest",
+      "key": "generator:jest"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/tailwindcss": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/tailwindcss.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/tailwindcss",
+      "key": "generator:tailwindcss"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/dva": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/dva.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/dva",
+      "key": "generator:dva"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/component": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/component.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/component",
+      "key": "generator:component"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/mock": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/mock.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/mock",
+      "key": "generator:mock"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/cypress": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/cypress.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/cypress",
+      "key": "generator:cypress"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/api": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/api.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/api",
+      "key": "generator:api"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/generators/precommit": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/generators/precommit.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/generators/precommit",
+      "key": "generator:precommit"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/plugin": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 0
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/plugin.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/plugin",
+      "key": "command:plugin"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/verify-commit": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/verify-commit.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/verify-commit",
+      "key": "verifyCommit"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/preview": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 16
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/preview.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/preview",
+      "key": "preview"
+    },
+    "./node_modules/@umijs/preset-umi/dist/commands/mfsu/mfsu": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/preset-umi/dist/commands/mfsu/mfsu.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/preset-umi/dist/commands/mfsu/mfsu",
+      "key": "mfsu-cli"
+    },
+    "@umijs/plugin-run": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 2
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/plugin-run/dist/index.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "@umijs/plugin-run",
+      "key": "run"
+    },
+    "./node_modules/@umijs/core/dist/service/generatePlugin": {
+      "config": {},
+      "time": {
+        "hooks": {},
+        "register": 1
+      },
+      "enableBy": "register",
+      "type": "plugin",
+      "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/@umijs/core/dist/service/generatePlugin.js",
+      "cwd": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo",
+      "id": "./node_modules/@umijs/core/dist/service/generatePlugin",
+      "key": "generatePlugin"
+    }
+  },
+  "presets": [],
+  "name": "build",
+  "args": {
+    "_": []
+  },
+  "userConfig": {
+    "title": "",
+    "routes": [
+      {
+        "path": "/",
+        "component": "home"
+      }
+    ],
+    "npmClient": "yarn",
+    "publicPath": "/proxy/assets/massistant/xuiweb/",
+    "history": {
+      "type": "hash"
+    },
+    "jsMinifier": "terser",
+    "extraPostCSSPlugins": [
+      null
+    ],
+    "headScripts": [
+      "/proxy/assets/massistant/xuiweb/mpaas-xui-h5-sdk.js"
+    ],
+    "proxy": {
+      "/stream_chat": {
+        "target": "http://100.83.100.64:80",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/stream_chat": "/stream_chat"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      },
+      "/resource": {
+        "target": "http://11.166.226.182:7001",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/resource": "/resource"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      },
+      "/history": {
+        "target": "http://100.83.100.64:80",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/history": "/history"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      }
+    }
+  },
+  "mainConfigFile": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/.umirc.ts",
+  "config": {
+    "routeLoader": {
+      "moduleType": "esm"
+    },
+    "mountElementId": "root",
+    "history": {
+      "type": "hash"
+    },
+    "base": "/",
+    "svgr": {},
+    "publicPath": "/proxy/assets/massistant/xuiweb/",
+    "mfsu": {
+      "strategy": "eager"
+    },
+    "ignoreMomentLocale": true,
+    "externals": {},
+    "autoCSSModules": true,
+    "alias": {
+      "umi": "@@/exports",
+      "react": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react",
+      "react-dom": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-dom",
+      "react-router": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-router",
+      "react-router-dom": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-router-dom",
+      "@": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/src",
+      "@@": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/src/.umi-production",
+      "regenerator-runtime": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/regenerator-runtime"
+    },
+    "title": "",
+    "routes": [
+      {
+        "path": "/",
+        "component": "home"
+      }
+    ],
+    "npmClient": "yarn",
+    "jsMinifier": "terser",
+    "extraPostCSSPlugins": [
+      null
+    ],
+    "headScripts": [
+      "/proxy/assets/massistant/xuiweb/mpaas-xui-h5-sdk.js"
+    ],
+    "proxy": {
+      "/stream_chat": {
+        "target": "http://100.83.100.64:80",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/stream_chat": "/stream_chat"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      },
+      "/resource": {
+        "target": "http://11.166.226.182:7001",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/resource": "/resource"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      },
+      "/history": {
+        "target": "http://100.83.100.64:80",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/history": "/history"
+        },
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept"
+        }
+      }
+    },
+    "targets": {
+      "chrome": 80
+    }
+  },
+  "routes": {
+    "1": {
+      "path": "/",
+      "file": "@/pages/home/index.jsx",
+      "id": "1",
+      "absPath": "/",
+      "__content": "import React, { useEffect } from \"react\";\nimport { ConfigProvider } from \"antd\";\nimport locale from 'antd/locale/zh_CN';\nimport Chat from '../chat';\nimport styles from './index.less';\nimport { initXuiSDK } from './initSDK.js';\n\n\nconst Index = () => {\n\n  useEffect(()=>{\n    initPage();\n    // 初始化XUI SDK,必须在使用XUI SDK 相关功能（如query、render）之前调用\n    initXuiSDK();\n  },[])\n  \n  // 准备页面初始化配置\n  const initPage = () => {\n    const setMeta = (name, content) => {\n      const existingMeta = document.querySelector(`meta[name=\"${name}\"]`);\n      // 创建新的 meta 标签\n      const newMeta = document.createElement('meta');\n      newMeta.name = name;\n      newMeta.content = content;\n  \n      // 替换旧的 meta 标签\n      if (existingMeta) {\n        existingMeta.parentNode.replaceChild(newMeta, existingMeta);\n      } else {\n        document.head.appendChild(newMeta);\n      }\n    }\n    //Android 禁止屏幕旋转\n    setMeta(\"screen-orientation\",\"portrait\");\n    //全屏显示\n    setMeta(\"full-screen\",\"yes\");\n    //防止页面进入全屏模式。\n    setMeta(\"apple-mobile-web-app-status-bar-style\",\"black-translucent\");\n    //禁止缩放\n    setMeta(\"viewport\",\"width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=no\");\n\n    if ('visualViewport' in window) {\n      // window.visualViewport.addEventListener('resize', () => {\n      //     // 在这里根据新的视觉视口高度调整页面布局\n      //     adjustPageLayout(visualViewport.height);\n      // });\n      adjustPageLayout(visualViewport.height);\n    }\n  }\n  \n  const adjustPageLayout = (height) => {\n    // 根据视觉视口的高度调整页面元素的高度\n    document.documentElement.style.setProperty('--visual-viewport-height', `${height}px`);\n  }\n\n  return (\n    <ConfigProvider locale={locale}>\n      <div className={styles.warpper}>\n        <Chat />\n      </div>\n    </ConfigProvider>\n  )\n}\n\nexport default Index;",
+      "__isJSFile": true,
+      "__absFile": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/src/pages/home/index.jsx"
+    }
+  },
+  "apiRoutes": {},
+  "hasSrcDir": true,
+  "npmClient": "yarn",
+  "umi": {
+    "version": "4.5.3",
+    "name": "Umi",
+    "importSource": "umi",
+    "cliName": "umi"
+  },
+  "bundleStatus": {
+    "done": false
+  },
+  "mfsuBundleStatus": {
+    "done": false
+  },
+  "react": {
+    "version": "18.3.1",
+    "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react"
+  },
+  "react-dom": {
+    "version": "18.3.1",
+    "path": "/Users/yyx/Desktop/Project/mpaas-xui-h5-demo/node_modules/react-dom"
+  },
+  "appJS": null,
+  "locale": "zh-CN",
+  "globalCSS": [],
+  "globalJS": [],
+  "overridesCSS": [],
+  "bundler": "webpack",
+  "git": {
+    "originUrl": "https://code.alipay.com/mPaaS-Resources/mpaas-xui-h5-demo.git"
+  },
+  "framework": "react",
+  "typescript": {
+    "tsVersion": "5.9.3",
+    "tslibVersion": "2.8.1"
+  },
+  "faviconFiles": []
+}

@@ -1,0 +1,59 @@
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+.typewriter-container {
+    font-family: 'Courier New', monospace;
+    line-height: 1.5;
+}
+
+.typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: currentColor;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+}
+
+/* 确保代码块在打字过程中正确显示 */
+.typewriter-container pre {
+    margin: 0;
+    padding: 0;
+}
+
+.typewriter-container code {
+    font-family: 'Courier New', monospace;
+}
+
+/* 高亮代码块样式 */
+.typewriter-container .hljs {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* 确保列表在打字过程中正确显示 */
+.typewriter-container ul,
+.typewriter-container ol {
+    margin: 0;
+    padding-left: 1.5em;
+}
+
+/* 确保标题在打字过程中正确显示 */
+.typewriter-container h1,
+.typewriter-container h2,
+.typewriter-container h3,
+.typewriter-container h4,
+.typewriter-container h5,
+.typewriter-container h6 {
+    margin: 0.5em 0;
+} 
