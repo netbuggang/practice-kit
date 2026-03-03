@@ -127,3 +127,7 @@ shrinkwrap.yaml
 *.sass.map
 *.scss.map
 .stylelintcache
+
+# ========== Umi 框架自动生成文件 ==========
+.umi/
+.umi-production/

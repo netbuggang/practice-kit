@@ -59,7 +59,7 @@ class MultiMPAASXuiManager {
 
           // 在iframe中创建script标签加载SDK
           const script = iframeWindow.document.createElement("script");
-          script.src = "http://30.142.25.136:8080/mpaas-xui-h5-sdk.js";
+          script.src = "/public/mpaas-xui-h5-sdk.js";
 
           script.onload = () => {
             try {
