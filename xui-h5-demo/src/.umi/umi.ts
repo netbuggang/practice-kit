@@ -3,7 +3,7 @@
 // DO NOT CHANGE IT MANUALLY!
 import './core/polyfill';
 
-import { renderClient } from '/Users/lingren/Downloads/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react';
+import { renderClient } from '/Users/lingren/workspace/personal/practice-kit/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react';
 import { getRoutes } from './core/route';
 import { createPluginManager } from './core/plugin';
 import { createHistory } from './core/history';

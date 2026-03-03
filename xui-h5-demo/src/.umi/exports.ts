@@ -7,10 +7,10 @@ export type { RuntimeConfig } from './core/defineApp'
 // plugins
 // plugins types.d.ts
 // @umijs/renderer-*
-export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from '/Users/lingren/Downloads/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react';
-export type { History, ClientLoader } from '/Users/lingren/Downloads/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react'
+export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from '/Users/lingren/workspace/personal/practice-kit/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react';
+export type { History, ClientLoader } from '/Users/lingren/workspace/personal/practice-kit/xui-h5-demo/node_modules/_@umijs_renderer-react@4.6.30@@umijs/renderer-react'
 // umi/client/client/plugin
-export { ApplyPluginsType, PluginManager } from '/Users/lingren/Downloads/xui-h5-demo/node_modules/_umi@4.6.30@umi/client/client/plugin.js';
+export { ApplyPluginsType, PluginManager } from '/Users/lingren/workspace/personal/practice-kit/xui-h5-demo/node_modules/_umi@4.6.30@umi/client/client/plugin.js';
 export { history, createHistory } from './core/history';
 export { terminal } from './core/terminal';
 // react ssr
